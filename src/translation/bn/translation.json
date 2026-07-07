@@ -113,5 +113,13 @@
   "hidePassword": "পাসওয়ার্ড লুকান",
   "notifications": "বিজ্ঞপ্তি",
   "collapseSidebar": "সাইডবার সংকুচিত করুন",
-  "expandSidebar": "সাইডবার প্রসারিত করুন"
+  "expandSidebar": "সাইডবার প্রসারিত করুন",
+  "manageCategories": "ক্যাটাগরি পরিচালনা",
+  "addCategory": "ক্যাটাগরি যোগ করুন",
+  "categoryName": "ক্যাটাগরির নাম",
+  "deleteCategory": "ক্যাটাগরি মুছুন",
+  "deleteCategoryConfirm": "এই ক্যাটাগরিটি মুছে ফেলবেন?",
+  "deleteCategoryDescription": "এই কাজটি ফিরিয়ে নেওয়া যাবে না।",
+  "noCategories": "কোনো ক্যাটাগরি পাওয়া যায়নি।",
+  "selectCategory": "ক্যাটাগরি নির্বাচন করুন"
 }

@@ -8,7 +8,7 @@ import type { Product, ProductPayload } from '@/apis/types/product_type'
 import { Button } from '@/components/ui/button'
 import { FileUpload } from '@/components/ui/file-upload'
 import { Input } from '@/components/ui/input'
-import { useCreateProduct, useUpdateProduct } from '@/hooks/useInventoryApi'
+import { useCategories, useCreateProduct, useUpdateProduct } from '@/hooks/useInventoryApi'
 
 type ProductFormErrors = Partial<Record<keyof ProductPayload, string>>
 
@@ -50,13 +50,22 @@ export function ProductForm({
   const [errors, setErrors] = useState<ProductFormErrors>({})
   const createMutation = useCreateProduct()
   const updateMutation = useUpdateProduct()
+  const categoriesQuery = useCategories({ page: 1, limit: 100, sort: 'name' })
   const isSaving = createMutation.isPending || updateMutation.isPending
+
+  const categoryOptions = useMemo(() => {
+    const names = (categoriesQuery.data?.data ?? []).map((category) => category.name)
+    if (form.category && !names.includes(form.category)) {
+      return [form.category, ...names]
+    }
+    return names
+  }, [categoriesQuery.data?.data, form.category])
 
   const previewUrl = useMemo(() => {
     if (form.image) return URL.createObjectURL(form.image)
     if (mode === 'edit' && product?.image) return `${ASSET_BASE_URL}${product.image}`
     return ''
-  }, [form.image, mode, product?.image])
+  }, [form.image, mode, product])
 
   useEffect(() => {
     if (!form.image || !previewUrl.startsWith('blob:')) return
@@ -142,12 +151,22 @@ export function ProductForm({
           onChange={(event) => setForm({ ...form, sku: event.target.value })}
           error={errors.sku}
         />
-        <Input
-          label={t('category')}
-          value={form.category}
-          onChange={(event) => setForm({ ...form, category: event.target.value })}
-          error={errors.category}
-        />
+        <label className="block space-y-1.5 text-sm font-medium text-foreground">
+          <span>{t('category')}</span>
+          <select
+            value={form.category}
+            onChange={(event) => setForm({ ...form, category: event.target.value })}
+            className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground outline-none focus:border-ring focus:ring-2 focus:ring-ring/20"
+          >
+            <option value="">{t('selectCategory')}</option>
+            {categoryOptions.map((name) => (
+              <option key={name} value={name}>
+                {name}
+              </option>
+            ))}
+          </select>
+          {errors.category && <span className="text-xs text-destructive">{errors.category}</span>}
+        </label>
         <Input
           label={t('purchasePrice')}
           type="number"

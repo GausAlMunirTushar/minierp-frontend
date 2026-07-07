@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import type { ColumnDef } from '@tanstack/react-table'
-import { Edit, Package, Plus, Search, Trash2 } from 'lucide-react'
+import { Edit, Package, Plus, Search, Tags, Trash2 } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { useSearchParams } from 'react-router-dom'
 import { toast } from 'sonner'
@@ -8,6 +8,7 @@ import { toast } from 'sonner'
 import { ASSET_BASE_URL, getApiErrorMessage } from '@/apis/configs'
 import type { Product } from '@/apis/types/product_type'
 import { PageHeader } from '@/components/layout/PageHeader'
+import { CategoryManager } from '@/components/products/CategoryManager'
 import { ProductForm } from '@/components/products/ProductForm'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
@@ -19,7 +20,7 @@ import { EmptyState, ErrorState } from '@/components/ui/state'
 import { UI_CONSTANTS } from '@/configs/constants'
 import { useAuth } from '@/hooks/useAuth'
 import { useDebouncedValue } from '@/hooks/useDebouncedValue'
-import { useDeleteProduct, useProducts } from '@/hooks/useInventoryApi'
+import { useCategories, useDeleteProduct, useProducts } from '@/hooks/useInventoryApi'
 import { formatCurrency } from '@/utils/currency'
 
 const getParamNumber = (value: string | null, fallback: number) => {
@@ -32,6 +33,7 @@ export function ProductsPage() {
   const { can } = useAuth()
   const [searchParams, setSearchParams] = useSearchParams()
   const [isFormOpen, setIsFormOpen] = useState(false)
+  const [isCategoryManagerOpen, setIsCategoryManagerOpen] = useState(false)
   const [editingProduct, setEditingProduct] = useState<Product | null>(null)
   const [productToDelete, setProductToDelete] = useState<Product | null>(null)
   const [searchInput, setSearchInput] = useState(searchParams.get('search') ?? '')
@@ -64,6 +66,8 @@ export function ProductsPage() {
     sort,
   })
   const deleteMutation = useDeleteProduct()
+  const categoriesQuery = useCategories({ page: 1, limit: 100, sort: 'name' })
+  const categoryOptions = categoriesQuery.data?.data ?? []
 
   const products = productsQuery.data?.data ?? []
   const meta = productsQuery.data?.meta
@@ -201,10 +205,16 @@ export function ProductsPage() {
         description={t('productDescription')}
         actions={
           canManage && (
-            <Button type="button" onClick={openCreateForm}>
-              <Plus size={16} />
-              {t('addProduct')}
-            </Button>
+            <>
+              <Button type="button" variant="outline" onClick={() => setIsCategoryManagerOpen(true)}>
+                <Tags size={16} />
+                {t('manageCategories')}
+              </Button>
+              <Button type="button" onClick={openCreateForm}>
+                <Plus size={16} />
+                {t('addProduct')}
+              </Button>
+            </>
           )
         }
       />
@@ -219,12 +229,19 @@ export function ProductsPage() {
             className="w-full rounded-md border border-input bg-background py-2 pl-10 pr-3 text-sm text-foreground outline-none focus:border-ring"
           />
         </label>
-        <input
+        <select
           value={category}
           onChange={(event) => updateParam('category', event.target.value)}
-          placeholder={t('filterByCategory')}
           className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground outline-none focus:border-ring"
-        />
+          aria-label={t('filterByCategory')}
+        >
+          <option value="">{t('filterByCategory')}</option>
+          {categoryOptions.map((categoryItem) => (
+            <option key={categoryItem._id} value={categoryItem.name}>
+              {categoryItem.name}
+            </option>
+          ))}
+        </select>
         <select
           value={sort}
           onChange={(event) => updateParam('sort', event.target.value)}
@@ -284,6 +301,15 @@ export function ProductsPage() {
           onSuccess={closeForm}
           onCancel={closeForm}
         />
+      </Dialog>
+
+      <Dialog
+        open={isCategoryManagerOpen}
+        onClose={() => setIsCategoryManagerOpen(false)}
+        title={t('manageCategories')}
+        closeLabel={t('close')}
+      >
+        <CategoryManager />
       </Dialog>
 
       <ConfirmDialog

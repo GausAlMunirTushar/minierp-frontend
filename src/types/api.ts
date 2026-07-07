@@ -48,6 +48,17 @@ export type LoginResponse = {
   user: User
 }
 
+export type Category = {
+  _id: string
+  name: string
+  createdAt: string
+  updatedAt: string
+}
+
+export type CategoryPayload = {
+  name: string
+}
+
 export type Product = {
   _id: string
   name: string

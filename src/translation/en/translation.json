@@ -113,5 +113,13 @@
   "hidePassword": "Hide password",
   "notifications": "Notifications",
   "collapseSidebar": "Collapse sidebar",
-  "expandSidebar": "Expand sidebar"
+  "expandSidebar": "Expand sidebar",
+  "manageCategories": "Manage Categories",
+  "addCategory": "Add Category",
+  "categoryName": "Category Name",
+  "deleteCategory": "Delete Category",
+  "deleteCategoryConfirm": "Delete this category?",
+  "deleteCategoryDescription": "This action cannot be undone.",
+  "noCategories": "No categories found.",
+  "selectCategory": "Select category"
 }
