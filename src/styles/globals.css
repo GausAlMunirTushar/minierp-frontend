@@ -82,10 +82,10 @@
   --radius: 0.75rem;
 
   /* Main theme colors */
-  --primary: hsl(221, 83%, 53%); /* Vivid blue */
+  --primary: hsl(164, 81%, 35%); /* Brand teal #11A47C */
   --primary-foreground: hsl(0, 0%, 100%);
-  --secondary: hsl(221, 100%, 96%); /* Soft blue background */
-  --secondary-foreground: hsl(221, 83%, 53%);
+  --secondary: hsl(164, 60%, 95%); /* Soft teal background */
+  --secondary-foreground: hsl(164, 81%, 28%);
   --destructive: hsl(0, 84%, 60%);
   --destructive-foreground: hsl(0, 0%, 100%);
   --success: hsl(142, 76%, 36%); /* Green */
@@ -106,7 +106,7 @@
   /* Border and accent colors */
   --border: hsl(220, 13%, 91%);
   --input: hsl(210, 3%, 86%);
-  --ring: hsl(221, 83%, 53%);
+  --ring: hsl(164, 81%, 35%);
   --accent: hsl(222, 47%, 56%); /* slate-500 */
   --accent-foreground: hsl(210, 40%, 98%); /* slate-50 */
   --muted: hsl(220, 16%, 92%); /* Muted gray-blue */
@@ -115,16 +115,16 @@
   /* Sidebar and modular bar colors */
   --sidebar: hsl(0, 0%, 100%);
   --sidebar-foreground: hsl(222, 47%, 11%);
-  --sidebar-primary: hsl(221, 83%, 53%);
+  --sidebar-primary: hsl(164, 81%, 35%);
   --sidebar-primary-foreground: hsl(0, 0%, 100%);
-  --sidebar-accent: hsl(221, 100%, 96%);
-  --sidebar-accent-foreground: hsl(221, 83%, 53%);
+  --sidebar-accent: hsl(164, 60%, 95%);
+  --sidebar-accent-foreground: hsl(164, 81%, 30%);
   --sidebar-border: hsl(220, 13%, 91%);
-  --sidebar-ring: hsl(221, 83%, 53%);
+  --sidebar-ring: hsl(164, 81%, 35%);
   --modularbar: hsl(0, 0%, 100%);
 
   /* Chart colors */
-  --chart-1: hsl(221, 83%, 53%);
+  --chart-1: hsl(164, 81%, 35%);
   --chart-2: hsl(289, 72%, 65%);
   --chart-3: hsl(174, 62%, 44%);
   --chart-4: hsl(43, 90%, 55%);
@@ -138,10 +138,10 @@
 
 .dark {
   /* Main theme colors */
-  --primary: hsl(221, 83%, 66%); /* Bright blue for dark bg */
+  --primary: hsl(164, 70%, 55%); /* Bright teal for dark bg */
   --primary-foreground: hsl(232, 19%, 15%);
   --secondary: hsl(232, 19%, 22%); /* Muted blue-gray */
-  --secondary-foreground: hsl(221, 83%, 66%);
+  --secondary-foreground: hsl(164, 70%, 60%);
   --destructive: hsl(0, 62%, 54%);
   --destructive-foreground: hsl(0, 0%, 100%);
   --success: hsl(142, 71%, 45%); /* Green */
@@ -162,7 +162,7 @@
   /* Border and accent colors */
   --border: hsl(232, 19%, 28%);
   --input: hsl(232, 19%, 22%);
-  --ring: hsl(221, 83%, 66%);
+  --ring: hsl(164, 70%, 55%);
   --accent: hsl(222, 47%, 36%); /* slate-700 */
   --accent-foreground: hsl(210, 40%, 98%); /* slate-50 */
   --muted: hsl(232, 19%, 22%);
@@ -171,16 +171,16 @@
   /* Sidebar and modular bar colors */
   --sidebar: hsl(232, 19%, 13%);
   --sidebar-foreground: hsl(220, 14%, 96%);
-  --sidebar-primary: hsl(221, 83%, 66%);
+  --sidebar-primary: hsl(164, 70%, 55%);
   --sidebar-primary-foreground: hsl(232, 19%, 13%);
   --sidebar-accent: hsl(232, 19%, 22%);
-  --sidebar-accent-foreground: hsl(221, 83%, 66%);
+  --sidebar-accent-foreground: hsl(164, 70%, 60%);
   --sidebar-border: hsl(232, 19%, 28%);
-  --sidebar-ring: hsl(221, 83%, 66%);
+  --sidebar-ring: hsl(164, 70%, 55%);
   --modularbar: hsl(232, 19%, 13%);
 
   /* Chart colors */
-  --chart-1: hsl(221, 83%, 66%);
+  --chart-1: hsl(164, 70%, 55%);
   --chart-2: hsl(289, 72%, 65%);
   --chart-3: hsl(174, 62%, 54%);
   --chart-4: hsl(43, 90%, 60%);

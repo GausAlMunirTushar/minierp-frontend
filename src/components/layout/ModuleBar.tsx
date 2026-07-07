@@ -1,8 +1,8 @@
 import { useMemo } from 'react'
-import { Boxes } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { NavLink, useLocation } from 'react-router-dom'
 
+import { Logo } from '@/components/common/Logo'
 import { useAuth } from '@/hooks/useAuth'
 import { getAccessibleModules, getActiveModule } from '@/lib/config-utils'
 import { getIcon } from '@/lib/icon-mapper'
@@ -36,9 +36,7 @@ export function ModuleBar({ isOpen, onClose }: { isOpen: boolean; onClose: () =>
           isOpen ? 'translate-x-0' : '-translate-x-full',
         )}
       >
-        <div className="mb-2 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-          <Boxes size={20} />
-        </div>
+        <Logo className="mb-2 h-9 w-9 shrink-0" />
 
         <nav className="flex flex-1 flex-col items-center gap-1.5 overflow-y-auto">
           {modules.map((module) => {

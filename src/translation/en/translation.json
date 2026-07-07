@@ -108,5 +108,7 @@
   "categoryChartSubtitle": "Distribution of products across categories",
   "toggleTheme": "Toggle theme",
   "lightMode": "Switch to light mode",
-  "darkMode": "Switch to dark mode"
+  "darkMode": "Switch to dark mode",
+  "showPassword": "Show password",
+  "hidePassword": "Hide password"
 }

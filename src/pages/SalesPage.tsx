@@ -1,4 +1,5 @@
-import { FormEvent, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
+import type { FormEvent } from 'react'
 import type { ColumnDef } from '@tanstack/react-table'
 import { Plus, Receipt, Trash2 } from 'lucide-react'
 import { useTranslation } from 'react-i18next'

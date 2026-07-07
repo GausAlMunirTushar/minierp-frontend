@@ -1,4 +1,4 @@
-import { useTheme } from '@/hooks/useTheme'
+import { useTheme } from '@/hooks/theme-context'
 
 export const useThemeDetector = () => {
   const { resolvedTheme } = useTheme()

@@ -1,10 +1,12 @@
-import { FormEvent, useMemo, useState } from 'react'
-import { Boxes } from 'lucide-react'
+import { useMemo, useState } from 'react'
+import type { FormEvent } from 'react'
+import { Eye, EyeOff } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 
 import { getApiErrorMessage } from '@/apis/configs'
 import { useLoginMutation } from '@/apis/mutations/auth_mutations'
+import { Logo } from '@/components/common/Logo'
 import { Alert } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
@@ -24,6 +26,7 @@ export function LoginPage() {
   const { login } = useAuth()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [showPassword, setShowPassword] = useState(false)
   const [errors, setErrors] = useState<LoginErrors>({})
 
   const mutation = useLoginMutation()
@@ -70,14 +73,12 @@ export function LoginPage() {
   }
 
   return (
-    <div className="grid min-h-screen place-items-center bg-muted p-4">
+    <div className="grid min-h-screen place-items-center bg-muted p-4 sm:p-6">
       <Card className="w-full max-w-md">
-        <CardContent className="space-y-6 p-8">
+        <CardContent className="space-y-5 p-6 sm:space-y-6 sm:p-8">
           <div className="text-center">
-            <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-primary text-primary-foreground">
-              <Boxes />
-            </div>
-            <h1 className="text-2xl font-semibold text-foreground">{t('loginTitle')}</h1>
+            <Logo className="mx-auto mb-4 h-12 w-12 sm:h-14 sm:w-14" />
+            <h1 className="text-xl font-semibold text-foreground sm:text-2xl">{t('loginTitle')}</h1>
             <p className="mt-1 text-sm text-muted-foreground">{t('loginSubtitle')}</p>
           </div>
 
@@ -95,11 +96,21 @@ export function LoginPage() {
             />
             <Input
               label={t('password')}
-              type="password"
+              type={showPassword ? 'text' : 'password'}
               value={password}
               onChange={(event) => setPassword(event.target.value)}
               error={errors.password}
               autoComplete="current-password"
+              endAdornment={
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((current) => !current)}
+                  aria-label={showPassword ? t('hidePassword') : t('showPassword')}
+                  className="rounded p-1 text-muted-foreground hover:text-foreground"
+                >
+                  {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                </button>
+              }
             />
             <Button className="w-full" type="submit" disabled={mutation.isPending}>
               {mutation.isPending ? t('signingIn') : t('signIn')}
