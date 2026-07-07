@@ -137,5 +137,11 @@
   "rolesDescription": "Assign which permissions each role has.",
   "savePermissions": "Save",
   "gridView": "Grid view",
-  "listView": "List view"
+  "listView": "List view",
+  "productNamePlaceholder": "Enter product name",
+  "skuPlaceholder": "Auto-generated from name",
+  "categoryNamePlaceholder": "Enter category name",
+  "searchCategories": "Search categories...",
+  "emailPlaceholder": "you@example.com",
+  "passwordPlaceholder": "Enter your password"
 }

@@ -47,11 +47,16 @@ export function ModuleBar({
             <Tooltip key={module.id} label={t(module.label)} side="right">
               <NavLink
                 to={module.path}
-                className="group/item relative flex w-full flex-col items-center gap-0.5 rounded-lg px-1 py-1.5"
-              >
-                {isActive && (
-                  <span className="absolute left-1 top-1/2 h-7 w-1 -translate-y-1/2 rounded-full bg-primary" />
+                className={cn(
+                  'group/item relative flex w-full flex-col items-center gap-0.5 rounded-lg border-l-1 px-1 py-2 transition-colors duration-200',
+                  isActive
+                    ? 'border-primary bg-secondary'
+                    : 'border-transparent hover:border-primary/60 hover:bg-secondary',
                 )}
+              >
+                {/* {isActive && (
+                  <span className="absolute left-1 top-1/2 h-7 w-1 -translate-y-1/2 rounded-full bg-primary" />
+                )} */}
                 <span
                   className={cn(
                     'relative flex items-center justify-center transition-all duration-200',
@@ -90,7 +95,7 @@ export function ModuleBar({
           onClick={onToggleSidebar}
           aria-label={sidebarCollapsed ? t('expandSidebar') : t('collapseSidebar')}
           title={sidebarCollapsed ? t('expandSidebar') : t('collapseSidebar')}
-          className="absolute -right-3 top-8 z-10 hidden h-6 w-6 -translate-y-1/2 items-center justify-center rounded-full border border-sidebar-border bg-sidebar text-sidebar-foreground/70 opacity-0 shadow-sm transition-opacity duration-150 hover:text-primary group-hover/rail:opacity-100 lg:flex"
+          className="absolute -right-3   top-8 z-10 hidden h-6 w-6 -translate-y-1/2 items-center justify-center rounded-full border border-sidebar-border bg-sidebar text-sidebar-foreground/70 opacity-0 shadow-sm transition-opacity duration-150 hover:text-primary group-hover/rail:opacity-100 lg:flex"
         >
           {sidebarCollapsed ? <ChevronRight size={14} /> : <ChevronLeft size={14} />}
         </button>

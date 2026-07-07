@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import type { FormEvent } from 'react'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
@@ -21,6 +21,16 @@ const emptyProduct: ProductPayload = {
   sellingPrice: '',
   stockQuantity: '',
   image: null,
+}
+
+const generateSku = (name: string): string => {
+  const words = name.trim().split(/\s+/).filter(Boolean)
+  const initials = words
+    .slice(0, 3)
+    .map((word) => word[0].toUpperCase())
+    .join('')
+  const random = Math.floor(1000 + Math.random() * 9000)
+  return initials ? `${initials}-${random}` : `SKU-${random}`
 }
 
 export function ProductForm({
@@ -49,6 +59,7 @@ export function ProductForm({
       : emptyProduct,
   )
   const [errors, setErrors] = useState<ProductFormErrors>({})
+  const skuManuallyEdited = useRef(false)
   const createMutation = useCreateProduct()
   const updateMutation = useUpdateProduct()
   const categoriesQuery = useCategories({ page: 1, limit: 100, sort: 'name' })
@@ -61,6 +72,20 @@ export function ProductForm({
     }
     return names
   }, [categoriesQuery.data?.data, form.category])
+
+  const handleNameChange = (value: string) => {
+    setForm((current) => {
+      const sku = skuManuallyEdited.current || !value.trim()
+        ? current.sku
+        : generateSku(value)
+      return { ...current, name: value, sku }
+    })
+  }
+
+  const handleSkuChange = (value: string) => {
+    skuManuallyEdited.current = true
+    setForm((current) => ({ ...current, sku: value }))
+  }
 
   const previewUrl = useMemo(() => {
     if (form.image) return URL.createObjectURL(form.image)
@@ -182,15 +207,17 @@ export function ProductForm({
       <div className="grid gap-4 md:grid-cols-3">
         <Input
           label={t('productName')}
+          placeholder={t('productNamePlaceholder')}
           value={form.name}
-          onChange={(event) => setForm({ ...form, name: event.target.value })}
+          onChange={(event) => handleNameChange(event.target.value)}
           onBlur={() => validateField('name')}
           error={errors.name}
         />
         <Input
           label={t('sku')}
+          placeholder={t('skuPlaceholder')}
           value={form.sku}
-          onChange={(event) => setForm({ ...form, sku: event.target.value })}
+          onChange={(event) => handleSkuChange(event.target.value)}
           onBlur={() => validateField('sku')}
           error={errors.sku}
         />
@@ -205,6 +232,7 @@ export function ProductForm({
         />
         <Input
           label={t('purchasePrice')}
+          placeholder="0.00"
           type="number"
           min="0"
           value={form.purchasePrice}
@@ -214,6 +242,7 @@ export function ProductForm({
         />
         <Input
           label={t('sellingPrice')}
+          placeholder="0.00"
           type="number"
           min="0"
           value={form.sellingPrice}
@@ -223,6 +252,7 @@ export function ProductForm({
         />
         <Input
           label={t('stockQuantity')}
+          placeholder="0"
           type="number"
           min="0"
           value={form.stockQuantity}
