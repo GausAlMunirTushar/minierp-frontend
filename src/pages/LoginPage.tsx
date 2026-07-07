@@ -24,8 +24,8 @@ export function LoginPage() {
   const location = useLocation()
   const [searchParams] = useSearchParams()
   const { login } = useAuth()
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
+  const [email, setEmail] = useState('admin@minierp.com')
+  const [password, setPassword] = useState('Password123!')
   const [showPassword, setShowPassword] = useState(false)
   const [errors, setErrors] = useState<LoginErrors>({})
 
