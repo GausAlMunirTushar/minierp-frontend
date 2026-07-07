@@ -288,7 +288,6 @@ export function ProductsPage() {
         },
       },
     ],
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     [canUpdate, canDelete, t],
   )
 

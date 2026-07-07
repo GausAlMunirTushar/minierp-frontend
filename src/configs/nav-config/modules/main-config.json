@@ -1,0 +1,17 @@
+{
+  "module": {
+    "id": "main",
+    "label": "dashboard",
+    "icon": "LayoutDashboard",
+    "base_path": "/dashboard",
+    "menus": [
+      {
+        "id": "dashboard",
+        "label": "dashboard",
+        "icon": "LayoutDashboard",
+        "path": "/dashboard",
+        "required_permissions": ["dashboard.view"]
+      }
+    ]
+  }
+}

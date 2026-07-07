@@ -100,5 +100,6 @@
   "hideColumn": "লুকান",
   "rowsPerPage": "প্রতি পৃষ্ঠায় সারি",
   "showing": "দেখাচ্ছে",
-  "noResultsFound": "কোনো ফলাফল পাওয়া যায়নি।"
+  "noResultsFound": "কোনো ফলাফল পাওয়া যায়নি।",
+  "search": "খুঁজুন..."
 }

@@ -100,5 +100,6 @@
   "hideColumn": "Hide",
   "rowsPerPage": "Rows per page",
   "showing": "Showing",
-  "noResultsFound": "No results found."
+  "noResultsFound": "No results found.",
+  "search": "Search..."
 }

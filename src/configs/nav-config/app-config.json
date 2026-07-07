@@ -1,0 +1,38 @@
+{
+  "app": {
+    "name": "Mini ERP",
+    "short_name": "ERP",
+    "version": "1.0.0"
+  },
+  "layout": {
+    "module_bar": { "width": "64px" },
+    "module_sidebar": { "width": "256px" },
+    "topbar": { "height": "64px" }
+  },
+  "modules": [
+    {
+      "id": "main",
+      "label": "dashboard",
+      "icon": "LayoutDashboard",
+      "path": "/dashboard",
+      "order": 1,
+      "enabled": true,
+      "required_permissions": ["dashboard.view"],
+      "config_file": "main-config.json",
+      "has_sidebar": false,
+      "contain_menus": ["dashboard"]
+    },
+    {
+      "id": "inventory",
+      "label": "inventory",
+      "icon": "Boxes",
+      "path": "/products",
+      "order": 2,
+      "enabled": true,
+      "required_permissions": ["products.view", "sales.create"],
+      "config_file": "inventory-config.json",
+      "has_sidebar": true,
+      "contain_menus": ["products", "sales"]
+    }
+  ]
+}
