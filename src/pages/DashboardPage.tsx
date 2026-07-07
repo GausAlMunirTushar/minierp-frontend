@@ -3,7 +3,7 @@ import { AlertTriangle, Boxes, Receipt } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 
-import { ASSET_BASE_URL, getApiErrorMessage } from '@/apis/configs'
+import { getApiErrorMessage } from '@/apis/configs'
 import { useProductsQuery } from '@/apis/queries/product_queries'
 import { BarChart, ChartCard, PieChart, StatCard } from '@/components/charts'
 import { PageHeader } from '@/components/layout/PageHeader'
@@ -127,7 +127,7 @@ export function DashboardPage() {
                         <Link to={`/products?search=${product.sku}`} className="flex items-center gap-3">
                           {product.image && (
                             <img
-                              src={`${ASSET_BASE_URL}${product.image}`}
+                              src={product.image}
                               alt={product.name}
                               className="h-10 w-10 rounded object-cover"
                             />

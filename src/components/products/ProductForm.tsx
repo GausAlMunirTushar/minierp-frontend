@@ -3,7 +3,7 @@ import type { FormEvent } from 'react'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 
-import { ASSET_BASE_URL, getApiErrorMessage } from '@/apis/configs'
+import { getApiErrorMessage } from '@/apis/configs'
 import type { Product, ProductPayload } from '@/apis/types/product_type'
 import { Button } from '@/components/ui/button'
 import { FileUpload } from '@/components/ui/file-upload'
@@ -64,7 +64,7 @@ export function ProductForm({
 
   const previewUrl = useMemo(() => {
     if (form.image) return URL.createObjectURL(form.image)
-    if (mode === 'edit' && product?.image) return `${ASSET_BASE_URL}${product.image}`
+    if (mode === 'edit' && product?.image) return product.image
     return ''
   }, [form.image, mode, product])
 

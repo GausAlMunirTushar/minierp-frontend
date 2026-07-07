@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next'
 import { useSearchParams } from 'react-router-dom'
 import { toast } from 'sonner'
 
-import { ASSET_BASE_URL, getApiErrorMessage } from '@/apis/configs'
+import { getApiErrorMessage } from '@/apis/configs'
 import type { Product } from '@/apis/types/product_type'
 import { PageHeader } from '@/components/layout/PageHeader'
 import { CategoryManager } from '@/components/products/CategoryManager'
@@ -138,7 +138,7 @@ export function ProductsPage() {
             <div className="flex items-center gap-3">
               {product.image ? (
                 <img
-                  src={`${ASSET_BASE_URL}${product.image}`}
+                  src={product.image}
                   alt={product.name}
                   className="h-10 w-10 rounded object-cover"
                 />
