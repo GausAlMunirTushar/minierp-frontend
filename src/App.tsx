@@ -5,6 +5,7 @@ import { ProtectedRoute } from '@/components/routing/ProtectedRoute'
 import { DashboardPage } from '@/pages/DashboardPage'
 import { LoginPage } from '@/pages/LoginPage'
 import { ProductsPage } from '@/pages/ProductsPage'
+import { RolesPage } from '@/pages/RolesPage'
 import { SalesPage } from '@/pages/SalesPage'
 
 export default function App() {
@@ -41,6 +42,14 @@ export default function App() {
           element={
             <ProtectedRoute permissions={['sales.create']}>
               <SalesPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="roles"
+          element={
+            <ProtectedRoute adminOnly>
+              <RolesPage />
             </ProtectedRoute>
           }
         />

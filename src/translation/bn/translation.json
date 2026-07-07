@@ -121,5 +121,8 @@
   "deleteCategoryConfirm": "এই ক্যাটাগরিটি মুছে ফেলবেন?",
   "deleteCategoryDescription": "এই কাজটি ফিরিয়ে নেওয়া যাবে না।",
   "noCategories": "কোনো ক্যাটাগরি পাওয়া যায়নি।",
-  "selectCategory": "ক্যাটাগরি নির্বাচন করুন"
+  "selectCategory": "ক্যাটাগরি নির্বাচন করুন",
+  "roles": "ভূমিকা",
+  "rolesDescription": "প্রতিটি ভূমিকার জন্য অনুমতি নির্ধারণ করুন।",
+  "savePermissions": "সংরক্ষণ করুন"
 }

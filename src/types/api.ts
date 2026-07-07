@@ -6,8 +6,20 @@ export type Permission =
   | 'products.create'
   | 'products.update'
   | 'products.delete'
+  | 'categories.view'
+  | 'categories.create'
+  | 'categories.update'
+  | 'categories.delete'
   | 'sales.view'
   | 'sales.create'
+
+export type RoleRecord = {
+  _id: string
+  name: Role
+  permissions: Permission[]
+  createdAt: string
+  updatedAt: string
+}
 
 export type User = {
   id: string

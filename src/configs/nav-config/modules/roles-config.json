@@ -1,0 +1,16 @@
+{
+  "module": {
+    "id": "roles",
+    "label": "roles",
+    "icon": "ShieldCheck",
+    "base_path": "/roles",
+    "menus": [
+      {
+        "id": "roles",
+        "label": "roles",
+        "icon": "ShieldCheck",
+        "path": "/roles"
+      }
+    ]
+  }
+}

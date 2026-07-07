@@ -17,6 +17,7 @@ export type Module = {
   config_file: string
   has_sidebar: boolean
   contain_menus: string[]
+  admin_only?: boolean
 }
 
 export type AppConfig = {

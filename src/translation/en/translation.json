@@ -121,5 +121,8 @@
   "deleteCategoryConfirm": "Delete this category?",
   "deleteCategoryDescription": "This action cannot be undone.",
   "noCategories": "No categories found.",
-  "selectCategory": "Select category"
+  "selectCategory": "Select category",
+  "roles": "Roles",
+  "rolesDescription": "Assign which permissions each role has.",
+  "savePermissions": "Save"
 }

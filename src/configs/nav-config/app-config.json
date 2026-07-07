@@ -45,6 +45,19 @@
       "config_file": "sales-config.json",
       "has_sidebar": false,
       "contain_menus": ["sales"]
+    },
+    {
+      "id": "roles",
+      "label": "roles",
+      "icon": "ShieldCheck",
+      "path": "/roles",
+      "order": 4,
+      "enabled": true,
+      "required_permissions": [],
+      "config_file": "roles-config.json",
+      "has_sidebar": false,
+      "contain_menus": ["roles"],
+      "admin_only": true
     }
   ]
 }

@@ -23,7 +23,10 @@ export function ModuleBar({
   const { user } = useAuth()
   const location = useLocation()
 
-  const modules = useMemo(() => getAccessibleModules(user?.permissions ?? []), [user?.permissions])
+  const modules = useMemo(
+    () => getAccessibleModules(user?.permissions ?? [], user?.role),
+    [user?.permissions, user?.role],
+  )
   const activeModuleId = useMemo(
     () => getActiveModule(location.pathname)?.id ?? 'main',
     [location.pathname],
