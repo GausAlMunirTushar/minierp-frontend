@@ -101,5 +101,12 @@
   "rowsPerPage": "Rows per page",
   "showing": "Showing",
   "noResultsFound": "No results found.",
-  "search": "Search..."
+  "search": "Search...",
+  "stockLevelsChartTitle": "Low Stock Levels",
+  "stockLevelsChartSubtitle": "Remaining quantity for low-stock products",
+  "categoryChartTitle": "Products by Category",
+  "categoryChartSubtitle": "Distribution of products across categories",
+  "toggleTheme": "Toggle theme",
+  "lightMode": "Switch to light mode",
+  "darkMode": "Switch to dark mode"
 }

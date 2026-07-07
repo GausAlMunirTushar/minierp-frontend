@@ -70,15 +70,15 @@ export function LoginPage() {
   }
 
   return (
-    <div className="grid min-h-screen place-items-center bg-slate-100 p-4">
+    <div className="grid min-h-screen place-items-center bg-muted p-4">
       <Card className="w-full max-w-md">
         <CardContent className="space-y-6 p-8">
           <div className="text-center">
-            <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-cyan-600 text-white">
+            <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-primary text-primary-foreground">
               <Boxes />
             </div>
-            <h1 className="text-2xl font-semibold text-slate-900">{t('loginTitle')}</h1>
-            <p className="mt-1 text-sm text-slate-500">{t('loginSubtitle')}</p>
+            <h1 className="text-2xl font-semibold text-foreground">{t('loginTitle')}</h1>
+            <p className="mt-1 text-sm text-muted-foreground">{t('loginSubtitle')}</p>
           </div>
 
           {sessionExpired && <Alert variant="info">{t('sessionExpired')}</Alert>}

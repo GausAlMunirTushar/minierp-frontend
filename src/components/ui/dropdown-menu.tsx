@@ -84,7 +84,7 @@ export function DropdownMenuContent({
     <div
       ref={ref}
       className={cn(
-        'absolute z-50 mt-2 min-w-[160px] rounded-md border border-slate-200 bg-white p-1 shadow-lg',
+        'absolute z-50 mt-2 min-w-[160px] rounded-md border border-border bg-popover p-1 shadow-lg',
         align === 'end' ? 'right-0' : 'left-0',
         className,
       )}
@@ -95,11 +95,11 @@ export function DropdownMenuContent({
 }
 
 export function DropdownMenuLabel({ children }: { children: ReactNode }) {
-  return <div className="px-2 py-1.5 text-xs font-semibold text-slate-500">{children}</div>
+  return <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground">{children}</div>
 }
 
 export function DropdownMenuSeparator() {
-  return <div className="my-1 h-px bg-slate-100" />
+  return <div className="my-1 h-px bg-border" />
 }
 
 export function DropdownMenuItem({
@@ -120,7 +120,7 @@ export function DropdownMenuItem({
         setOpen(false)
       }}
       className={cn(
-        'flex w-full items-center rounded-sm px-2 py-1.5 text-left text-sm text-slate-700 hover:bg-slate-100',
+        'flex w-full items-center rounded-sm px-2 py-1.5 text-left text-sm text-popover-foreground hover:bg-accent hover:text-accent-foreground',
         className,
       )}
     >
@@ -142,7 +142,7 @@ export function DropdownMenuCheckboxItem({
     <button
       type="button"
       onClick={() => onCheckedChange(!checked)}
-      className="flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-left text-sm capitalize text-slate-700 hover:bg-slate-100"
+      className="flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-left text-sm capitalize text-popover-foreground hover:bg-accent hover:text-accent-foreground"
     >
       <span className="flex h-4 w-4 items-center justify-center">
         {checked && <Check size={14} />}

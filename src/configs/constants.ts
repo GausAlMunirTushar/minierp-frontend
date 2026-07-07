@@ -9,6 +9,7 @@ export const STORAGE_KEYS = {
   ACCESS_TOKEN: 'mini_erp_access_token',
   USER: 'mini_erp_user',
   LOCALE: 'mini_erp_locale',
+  THEME: 'mini_erp_theme',
 } as const
 
 export const UI_CONSTANTS = {

@@ -20,7 +20,7 @@ export function AppLayout() {
   const closeMobileNav = () => setMobileNavOpen(false)
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-background">
       <ModuleBar isOpen={mobileNavOpen} onClose={closeMobileNav} />
       {moduleConfig && (
         <ModuleSidebar config={moduleConfig} isOpen={mobileNavOpen} onNavigate={closeMobileNav} />

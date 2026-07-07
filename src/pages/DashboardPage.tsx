@@ -1,32 +1,40 @@
+import { useMemo } from 'react'
 import { AlertTriangle, Boxes, Receipt } from 'lucide-react'
-import type { ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 
 import { ASSET_BASE_URL, getApiErrorMessage } from '@/apis/configs'
+import { useProductsQuery } from '@/apis/queries/product_queries'
+import { BarChart, ChartCard, PieChart, StatCard } from '@/components/charts'
 import { PageHeader } from '@/components/layout/PageHeader'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { EmptyState, ErrorState, LoadingState } from '@/components/ui/state'
 import { useDashboardStats } from '@/hooks/useInventoryApi'
 
-function StatCard({ title, value, icon }: { title: string; value: number | string; icon: ReactNode }) {
-  return (
-    <Card>
-      <CardContent className="flex items-center justify-between">
-        <div>
-          <p className="text-sm text-slate-500">{title}</p>
-          <p className="mt-2 text-3xl font-semibold text-slate-900">{value}</p>
-        </div>
-        <div className="rounded-lg bg-cyan-50 p-3 text-cyan-700">{icon}</div>
-      </CardContent>
-    </Card>
-  )
-}
-
 export function DashboardPage() {
   const { t } = useTranslation()
   const { data, error, isError, isLoading, refetch } = useDashboardStats()
   const stats = data?.data
+
+  const categoriesQuery = useProductsQuery({ page: 1, limit: 100, sort: 'name' })
+
+  const stockLevelData = useMemo(
+    () =>
+      (stats?.lowStockProducts ?? []).map((product) => ({
+        name: product.name,
+        stockQuantity: product.stockQuantity,
+      })),
+    [stats?.lowStockProducts],
+  )
+
+  const categoryData = useMemo(() => {
+    const products = categoriesQuery.data?.data ?? []
+    const counts = new Map<string, number>()
+    products.forEach((product) => {
+      counts.set(product.category, (counts.get(product.category) ?? 0) + 1)
+    })
+    return Array.from(counts.entries()).map(([category, count]) => ({ category, count }))
+  }, [categoriesQuery.data?.data])
 
   if (isLoading) {
     return <LoadingState label={t('loadingDashboard')} />
@@ -48,25 +56,48 @@ export function DashboardPage() {
       <PageHeader title={t('dashboard')} description={t('inventoryOverview')} />
 
       <div className="grid gap-4 md:grid-cols-3">
-        <StatCard title={t('totalProducts')} value={stats?.totalProducts ?? 0} icon={<Boxes />} />
-        <StatCard title={t('totalSales')} value={stats?.totalSales ?? 0} icon={<Receipt />} />
+        <StatCard title={t('totalProducts')} value={stats?.totalProducts ?? 0} icon={<Boxes />} color="blue" />
+        <StatCard title={t('totalSales')} value={stats?.totalSales ?? 0} icon={<Receipt />} color="green" />
         <StatCard
           title={t('lowStock')}
           value={stats?.lowStockProducts.length ?? 0}
           icon={<AlertTriangle />}
+          color="red"
         />
+      </div>
+
+      <div className="grid gap-4 lg:grid-cols-2">
+        <ChartCard title={t('stockLevelsChartTitle')} subtitle={t('stockLevelsChartSubtitle')}>
+          {stockLevelData.length ? (
+            <BarChart data={stockLevelData} dataKey="name" valueKey="stockQuantity" color="#ef4444" />
+          ) : (
+            <EmptyState title={t('noLowStockProducts')} />
+          )}
+        </ChartCard>
+
+        <ChartCard
+          title={t('categoryChartTitle')}
+          subtitle={t('categoryChartSubtitle')}
+          isLoading={categoriesQuery.isLoading}
+        >
+          {categoryData.length ? (
+            <PieChart data={categoryData} dataKey="count" nameKey="category" />
+          ) : (
+            <EmptyState title={t('noProductsFound')} />
+          )}
+        </ChartCard>
       </div>
 
       <Card>
         <CardHeader>
-          <h2 className="font-semibold text-slate-900">{t('lowStockProducts')}</h2>
+          <h2 className="font-semibold text-card-foreground">{t('lowStockProducts')}</h2>
         </CardHeader>
         <CardContent>
           {stats?.lowStockProducts.length ? (
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b text-left text-slate-500">
+                  <tr className="border-b border-border text-left text-muted-foreground">
                     <th className="py-3">{t('product')}</th>
                     <th>{t('sku')}</th>
                     <th>{t('category')}</th>
@@ -75,7 +106,7 @@ export function DashboardPage() {
                 </thead>
                 <tbody>
                   {stats.lowStockProducts.map((product) => (
-                    <tr key={product._id} className="border-b last:border-0">
+                    <tr key={product._id} className="border-b border-border last:border-0">
                       <td className="py-3">
                         <Link to={`/products?search=${product.sku}`} className="flex items-center gap-3">
                           {product.image && (
@@ -85,16 +116,12 @@ export function DashboardPage() {
                               className="h-10 w-10 rounded object-cover"
                             />
                           )}
-                          <span className="font-medium text-slate-900 hover:text-cyan-700">
-                            {product.name}
-                          </span>
+                          <span className="font-medium text-card-foreground hover:text-primary">{product.name}</span>
                         </Link>
                       </td>
                       <td>{product.sku}</td>
                       <td>{product.category}</td>
-                      <td className="text-right font-semibold text-red-600">
-                        {product.stockQuantity}
-                      </td>
+                      <td className="text-right font-semibold text-destructive">{product.stockQuantity}</td>
                     </tr>
                   ))}
                 </tbody>

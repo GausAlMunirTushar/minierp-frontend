@@ -6,8 +6,8 @@ export function DataTableSkeleton({ columns = 6, rows = 5 }: { columns?: number;
       <div className="flex items-center justify-end">
         <Skeleton className="h-8 w-24" />
       </div>
-      <div className="overflow-hidden rounded-lg border border-slate-200">
-        <div className="grid gap-4 border-b border-slate-100 bg-slate-50 p-4" style={{ gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))` }}>
+      <div className="overflow-hidden rounded-lg border border-border">
+        <div className="grid gap-4 border-b border-border bg-muted p-4" style={{ gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))` }}>
           {Array.from({ length: columns }).map((_, index) => (
             <Skeleton key={index} className="h-4 w-3/5" />
           ))}
@@ -15,7 +15,7 @@ export function DataTableSkeleton({ columns = 6, rows = 5 }: { columns?: number;
         {Array.from({ length: rows }).map((_, rowIndex) => (
           <div
             key={rowIndex}
-            className="grid gap-4 border-b border-slate-100 p-4 last:border-b-0"
+            className="grid gap-4 border-b border-border p-4 last:border-b-0"
             style={{ gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))` }}
           >
             {Array.from({ length: columns }).map((_, columnIndex) => (

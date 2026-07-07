@@ -5,11 +5,11 @@ import { cn } from '@/lib/utils'
 type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'danger' | 'ghost'
 
 const variants: Record<ButtonVariant, string> = {
-  primary: 'bg-slate-900 text-white hover:bg-slate-800',
-  secondary: 'bg-cyan-600 text-white hover:bg-cyan-700',
-  outline: 'border border-slate-200 bg-white text-slate-700 hover:bg-slate-50',
-  danger: 'bg-red-600 text-white hover:bg-red-700',
-  ghost: 'text-slate-600 hover:bg-slate-100',
+  primary: 'bg-primary text-primary-foreground hover:bg-primary/90',
+  secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/80',
+  outline: 'border border-border bg-background text-foreground hover:bg-accent hover:text-accent-foreground',
+  danger: 'bg-destructive text-destructive-foreground hover:bg-destructive/90',
+  ghost: 'text-foreground hover:bg-accent hover:text-accent-foreground',
 }
 
 export function Button({

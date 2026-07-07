@@ -101,5 +101,12 @@
   "rowsPerPage": "প্রতি পৃষ্ঠায় সারি",
   "showing": "দেখাচ্ছে",
   "noResultsFound": "কোনো ফলাফল পাওয়া যায়নি।",
-  "search": "খুঁজুন..."
+  "search": "খুঁজুন...",
+  "stockLevelsChartTitle": "কম স্টকের পরিমাণ",
+  "stockLevelsChartSubtitle": "কম স্টকের পণ্যের অবশিষ্ট পরিমাণ",
+  "categoryChartTitle": "ক্যাটাগরি অনুযায়ী পণ্য",
+  "categoryChartSubtitle": "ক্যাটাগরি জুড়ে পণ্যের বণ্টন",
+  "toggleTheme": "থিম পরিবর্তন করুন",
+  "lightMode": "লাইট মোডে যান",
+  "darkMode": "ডার্ক মোডে যান"
 }

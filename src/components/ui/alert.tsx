@@ -5,9 +5,9 @@ import { cn } from '@/lib/utils'
 type AlertVariant = 'error' | 'success' | 'info'
 
 const variants: Record<AlertVariant, string> = {
-  error: 'border-red-200 bg-red-50 text-red-700',
-  success: 'border-emerald-200 bg-emerald-50 text-emerald-700',
-  info: 'border-cyan-200 bg-cyan-50 text-cyan-700',
+  error: 'border-destructive/30 bg-destructive/10 text-destructive',
+  success: 'border-success/30 bg-success/10 text-success',
+  info: 'border-info/30 bg-info/10 text-info',
 }
 
 export function Alert({

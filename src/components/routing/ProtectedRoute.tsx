@@ -23,7 +23,7 @@ export function ProtectedRoute({
 
   if (permissions.length > 0 && !permissions.every((permission) => can(permission))) {
     return (
-      <div className="grid min-h-screen place-items-center bg-slate-50 p-4">
+      <div className="grid min-h-screen place-items-center bg-background p-4">
         <ErrorState title={t('accessDenied')} description={t('accessDeniedDescription')} />
       </div>
     )

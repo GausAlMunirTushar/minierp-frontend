@@ -25,18 +25,18 @@ export function ModuleBar({ isOpen, onClose }: { isOpen: boolean; onClose: () =>
         <button
           type="button"
           aria-label={t('close')}
-          className="fixed inset-0 z-40 bg-slate-950/40 lg:hidden"
+          className="fixed inset-0 z-40 bg-black/40 lg:hidden"
           onClick={onClose}
         />
       )}
 
       <aside
         className={cn(
-          'fixed inset-y-0 left-0 z-50 flex w-16 flex-col items-center gap-1 border-r border-slate-200 bg-white py-3 transition-transform duration-200 lg:translate-x-0',
+          'fixed inset-y-0 left-0 z-50 flex w-16 flex-col items-center gap-1 border-r border-sidebar-border bg-sidebar py-3 transition-transform duration-200 lg:translate-x-0',
           isOpen ? 'translate-x-0' : '-translate-x-full',
         )}
       >
-        <div className="mb-2 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-cyan-600 text-white">
+        <div className="mb-2 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
           <Boxes size={20} />
         </div>
 
@@ -53,7 +53,9 @@ export function ModuleBar({ isOpen, onClose }: { isOpen: boolean; onClose: () =>
                 onClick={onClose}
                 className={cn(
                   'flex w-full flex-col items-center gap-0.5 rounded-lg px-1 py-1.5 transition-colors',
-                  isActive ? 'bg-cyan-50 text-cyan-700' : 'text-slate-500 hover:bg-slate-100 hover:text-cyan-700',
+                  isActive
+                    ? 'bg-sidebar-accent text-sidebar-accent-foreground'
+                    : 'text-sidebar-foreground/60 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground',
                 )}
               >
                 {Icon && <Icon size={18} />}

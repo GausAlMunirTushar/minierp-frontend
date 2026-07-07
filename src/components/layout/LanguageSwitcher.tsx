@@ -11,12 +11,12 @@ export function LanguageSwitcher() {
   }
 
   return (
-    <label className="flex items-center gap-2 text-sm text-slate-600">
+    <label className="flex items-center gap-2 text-sm text-muted-foreground">
       <span>{t('language')}</span>
       <select
         value={i18n.language}
         onChange={(event) => changeLanguage(event.target.value)}
-        className="rounded-md border border-slate-200 bg-white px-2 py-1 outline-none focus:border-cyan-500"
+        className="rounded-md border border-input bg-background px-2 py-1 text-foreground outline-none focus:border-ring"
         aria-label={t('language')}
       >
         <option value="en">EN</option>

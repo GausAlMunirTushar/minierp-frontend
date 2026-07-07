@@ -3,11 +3,11 @@ import type { ColumnDef } from '@tanstack/react-table'
 import { Edit, Package, Plus, Search, Trash2, X } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { useSearchParams } from 'react-router-dom'
+import { toast } from 'sonner'
 
 import { ASSET_BASE_URL, getApiErrorMessage } from '@/apis/configs'
 import type { Product, ProductPayload } from '@/apis/types/product_type'
 import { PageHeader } from '@/components/layout/PageHeader'
-import { Alert } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { ConfirmDialog } from '@/components/ui/confirm-dialog'
@@ -47,7 +47,6 @@ export function ProductsPage() {
   const [form, setForm] = useState<ProductPayload>(emptyProduct)
   const [errors, setErrors] = useState<ProductFormErrors>({})
   const [productToDelete, setProductToDelete] = useState<Product | null>(null)
-  const [feedback, setFeedback] = useState('')
   const [searchInput, setSearchInput] = useState(searchParams.get('search') ?? '')
 
   const page = getParamNumber(searchParams.get('page'), 1)
@@ -87,7 +86,6 @@ export function ProductsPage() {
   const canUpdate = can('products.update')
   const canDelete = can('products.delete')
   const isSaving = createMutation.isPending || updateMutation.isPending
-  const mutationError = createMutation.error || updateMutation.error || deleteMutation.error
 
   const previewUrl = useMemo(() => {
     if (form.image) return URL.createObjectURL(form.image)
@@ -131,7 +129,6 @@ export function ProductsPage() {
   }
 
   const startEdit = (product: Product) => {
-    setFeedback('')
     setEditing(product)
     setForm({
       name: product.name,
@@ -184,7 +181,6 @@ export function ProductsPage() {
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    setFeedback('')
     if (!validate()) return
 
     if (editing) {
@@ -193,8 +189,9 @@ export function ProductsPage() {
         {
           onSuccess: () => {
             resetForm()
-            setFeedback(t('updatedSuccessfully'))
+            toast.success(t('updatedSuccessfully'))
           },
+          onError: (error) => toast.error(getApiErrorMessage(error)),
         },
       )
       return
@@ -203,8 +200,9 @@ export function ProductsPage() {
     createMutation.mutate(form, {
       onSuccess: () => {
         resetForm()
-        setFeedback(t('createdSuccessfully'))
+        toast.success(t('createdSuccessfully'))
       },
+      onError: (error) => toast.error(getApiErrorMessage(error)),
     })
   }
 
@@ -214,8 +212,9 @@ export function ProductsPage() {
     deleteMutation.mutate(productToDelete._id, {
       onSuccess: () => {
         setProductToDelete(null)
-        setFeedback(t('deletedSuccessfully'))
+        toast.success(t('deletedSuccessfully'))
       },
+      onError: (error) => toast.error(getApiErrorMessage(error)),
     })
   }
 
@@ -237,7 +236,7 @@ export function ProductsPage() {
               ) : (
                 <Package className="h-10 w-10 rounded border p-2" />
               )}
-              <span className="font-medium text-slate-900">{product.name}</span>
+              <span className="font-medium text-foreground">{product.name}</span>
             </div>
           )
         },
@@ -297,24 +296,24 @@ export function ProductsPage() {
 
       <div className="grid gap-3 lg:grid-cols-[1fr_220px_220px]">
         <label className="relative block">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={18} />
           <input
             value={searchInput}
             onChange={(event) => setSearchInput(event.target.value)}
             placeholder={t('searchProducts')}
-            className="w-full rounded-md border border-slate-200 bg-white py-2 pl-10 pr-3 text-sm outline-none focus:border-cyan-500"
+            className="w-full rounded-md border border-input bg-background py-2 pl-10 pr-3 text-sm text-foreground outline-none focus:border-ring"
           />
         </label>
         <input
           value={category}
           onChange={(event) => updateParam('category', event.target.value)}
           placeholder={t('filterByCategory')}
-          className="w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-cyan-500"
+          className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground outline-none focus:border-ring"
         />
         <select
           value={sort}
           onChange={(event) => updateParam('sort', event.target.value)}
-          className="w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-cyan-500"
+          className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground outline-none focus:border-ring"
           aria-label={t('sortBy')}
         >
           <option value="-createdAt">{t('newest')}</option>
@@ -324,13 +323,10 @@ export function ProductsPage() {
         </select>
       </div>
 
-      {feedback && <Alert variant="success">{feedback}</Alert>}
-      {mutationError && <Alert variant="error">{getApiErrorMessage(mutationError)}</Alert>}
-
       {canManage && (
         <Card>
           <CardHeader className="flex flex-row items-center justify-between">
-            <h2 className="font-semibold text-slate-900">
+            <h2 className="font-semibold text-card-foreground">
               {editing ? t('editProduct') : t('addProduct')}
             </h2>
             {editing && (

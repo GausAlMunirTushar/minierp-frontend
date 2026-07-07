@@ -27,11 +27,11 @@ export function DataTablePagination({
   const to = safeTotal === 0 ? 0 : Math.min(safePage * safePageSize, safeTotal)
 
   return (
-    <div className="flex flex-col gap-3 border-t border-slate-100 p-4 text-sm text-slate-600 sm:flex-row sm:items-center sm:justify-between">
+    <div className="flex flex-col gap-3 border-t border-border p-4 text-sm text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
       <span>
-        {t('showing')} <span className="font-medium text-slate-900">{from}</span>–
-        <span className="font-medium text-slate-900">{to}</span> {t('of')}{' '}
-        <span className="font-medium text-slate-900">{safeTotal}</span>
+        {t('showing')} <span className="font-medium text-foreground">{from}</span>–
+        <span className="font-medium text-foreground">{to}</span> {t('of')}{' '}
+        <span className="font-medium text-foreground">{safeTotal}</span>
       </span>
 
       <div className="flex flex-wrap items-center gap-4">
@@ -40,7 +40,7 @@ export function DataTablePagination({
           <select
             value={pageSize}
             onChange={(event) => onPageSizeChange(Number(event.target.value))}
-            className="rounded-md border border-slate-200 bg-white px-2 py-1 outline-none focus:border-cyan-500"
+            className="rounded-md border border-input bg-background px-2 py-1 text-foreground outline-none focus:border-ring"
           >
             {[10, 20, 25, 30, 40, 50].map((size) => (
               <option key={size} value={size}>

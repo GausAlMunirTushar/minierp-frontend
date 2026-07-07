@@ -2,11 +2,11 @@ import { FormEvent, useMemo, useState } from 'react'
 import type { ColumnDef } from '@tanstack/react-table'
 import { Plus, Receipt, Trash2 } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
+import { toast } from 'sonner'
 
 import { getApiErrorMessage } from '@/apis/configs'
 import type { Sale, SaleItemInput } from '@/apis/types/sale_type'
 import { PageHeader } from '@/components/layout/PageHeader'
-import { Alert } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { DataTable } from '@/components/ui/data-table/data-table'
@@ -25,7 +25,6 @@ export function SalesPage() {
   const { t } = useTranslation()
   const [items, setItems] = useState<SaleItemInput[]>([newItem()])
   const [errors, setErrors] = useState<SaleErrors>({})
-  const [feedback, setFeedback] = useState('')
   const productsQuery = useProducts({ page: 1, limit: 100, sort: 'name' })
   const salesQuery = useSales({ page: 1, limit: 10 })
   const createSale = useCreateSale()
@@ -42,7 +41,6 @@ export function SalesPage() {
   )
 
   const updateItem = (index: number, patch: Partial<SaleItemInput>) => {
-    setFeedback('')
     setErrors((current) => ({ ...current, [index]: {} }))
     setItems((current) =>
       current.map((item, itemIndex) => (itemIndex === index ? { ...item, ...patch } : item)),
@@ -116,15 +114,15 @@ export function SalesPage() {
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    setFeedback('')
     if (!validate()) return
 
     createSale.mutate(items, {
       onSuccess: () => {
         setItems([newItem()])
         setErrors({})
-        setFeedback(t('saleCreated'))
+        toast.success(t('saleCreated'))
       },
+      onError: (error) => toast.error(getApiErrorMessage(error)),
     })
   }
 
@@ -132,12 +130,9 @@ export function SalesPage() {
     <div className="space-y-6">
       <PageHeader title={t('sales')} description={t('salesDescription')} />
 
-      {feedback && <Alert variant="success">{feedback}</Alert>}
-      {createSale.error && <Alert variant="error">{getApiErrorMessage(createSale.error)}</Alert>}
-
       <Card>
         <CardHeader>
-          <h2 className="font-semibold text-slate-900">{t('createSale')}</h2>
+          <h2 className="font-semibold text-card-foreground">{t('createSale')}</h2>
         </CardHeader>
         <CardContent>
           {productsQuery.isLoading ? (
@@ -158,14 +153,14 @@ export function SalesPage() {
                 return (
                   <div
                     key={index}
-                    className="grid gap-3 rounded-md border border-slate-200 p-3 md:grid-cols-[1fr_150px_160px_auto]"
+                    className="grid gap-3 rounded-md border border-border p-3 md:grid-cols-[1fr_150px_160px_auto]"
                   >
-                    <label className="space-y-1.5 text-sm font-medium text-slate-700">
+                    <label className="space-y-1.5 text-sm font-medium text-foreground">
                       <span>{t('product')}</span>
                       <select
                         value={item.product}
                         onChange={(event) => updateItem(index, { product: event.target.value })}
-                        className="w-full rounded-md border border-slate-200 bg-white px-3 py-2 outline-none focus:border-cyan-500"
+                        className="w-full rounded-md border border-input bg-background px-3 py-2 text-foreground outline-none focus:border-ring"
                       >
                         <option value="">{t('selectProduct')}</option>
                         {products.map((productItem) => {
@@ -187,7 +182,7 @@ export function SalesPage() {
                         })}
                       </select>
                       {errors[index]?.product && (
-                        <span className="text-xs text-red-600">{errors[index]?.product}</span>
+                        <span className="text-xs text-destructive">{errors[index]?.product}</span>
                       )}
                     </label>
                     <Input
@@ -201,9 +196,9 @@ export function SalesPage() {
                       }
                       error={errors[index]?.quantity}
                     />
-                    <div className="space-y-1.5 text-sm font-medium text-slate-700">
+                    <div className="space-y-1.5 text-sm font-medium text-foreground">
                       <span>{t('lineTotal')}</span>
-                      <div className="rounded-md border border-slate-200 bg-slate-50 px-3 py-2">
+                      <div className="rounded-md border border-border bg-muted px-3 py-2">
                         {formatCurrency(lineTotal)}
                       </div>
                     </div>
@@ -228,8 +223,8 @@ export function SalesPage() {
                 </Button>
                 <div className="flex items-center gap-4">
                   <div className="text-right">
-                    <p className="text-xs text-slate-500">{t('grandTotal')}</p>
-                    <p className="text-2xl font-semibold text-slate-900">
+                    <p className="text-xs text-muted-foreground">{t('grandTotal')}</p>
+                    <p className="text-2xl font-semibold text-foreground">
                       {formatCurrency(grandTotal)}
                     </p>
                   </div>
@@ -246,7 +241,7 @@ export function SalesPage() {
 
       <Card>
         <CardHeader>
-          <h2 className="font-semibold text-slate-900">{t('recentSales')}</h2>
+          <h2 className="font-semibold text-card-foreground">{t('recentSales')}</h2>
         </CardHeader>
         <CardContent className="p-0">
           {salesQuery.isError ? (
