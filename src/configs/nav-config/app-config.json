@@ -5,7 +5,7 @@
     "version": "1.0.0"
   },
   "layout": {
-    "module_bar": { "width": "64px" },
+    "module_bar": { "width": "80px" },
     "module_sidebar": { "width": "256px" },
     "topbar": { "height": "64px" }
   },

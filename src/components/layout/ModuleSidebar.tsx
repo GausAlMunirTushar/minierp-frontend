@@ -28,17 +28,17 @@ export function ModuleSidebar({
   return (
     <aside
       className={cn(
-        'fixed inset-y-0 left-16 z-40 flex w-64 flex-col border-r border-sidebar-border bg-sidebar transition-transform duration-200 lg:translate-x-0',
+        'fixed inset-y-0 left-20 z-40 flex w-64 flex-col border-r border-sidebar-border bg-sidebar transition-transform duration-200 lg:translate-x-0',
         // -translate-x-full only shifts by this element's own width (256px), which isn't enough
-        // to clear its left-16 (64px) static offset too — use an explicit distance instead.
-        isOpen ? 'translate-x-0' : '-translate-x-[320px]',
+        // to clear its left-20 (80px) static offset too — use an explicit distance instead.
+        isOpen ? 'translate-x-0' : '-translate-x-[336px]',
       )}
     >
-      <div className="border-b border-sidebar-border p-4">
+      <div className="flex h-16 shrink-0 items-center border-b border-sidebar-border px-4 lg:px-6">
         <h2 className="text-sm font-semibold text-sidebar-foreground">{t(config.module.label)}</h2>
       </div>
 
-      <div className="border-b border-sidebar-border p-3">
+      <div className="border-b border-sidebar-border px-4 py-3">
         <label className="relative block">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={14} />
           <input

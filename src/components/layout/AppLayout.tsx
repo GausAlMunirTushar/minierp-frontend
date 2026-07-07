@@ -26,7 +26,7 @@ export function AppLayout() {
         <ModuleSidebar config={moduleConfig} isOpen={mobileNavOpen} onNavigate={closeMobileNav} />
       )}
 
-      <div className={cn('flex min-h-screen flex-col', moduleConfig ? 'lg:pl-80' : 'lg:pl-16')}>
+      <div className={cn('flex min-h-screen flex-col', moduleConfig ? 'lg:pl-[336px]' : 'lg:pl-20')}>
         <Topbar onMenuClick={() => setMobileNavOpen(true)} />
         <main className="flex-1 p-4 lg:p-6">
           <Outlet />

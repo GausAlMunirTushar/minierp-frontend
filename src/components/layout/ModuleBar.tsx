@@ -33,13 +33,15 @@ export function ModuleBar({ isOpen, onClose }: { isOpen: boolean; onClose: () =>
 
       <aside
         className={cn(
-          'fixed inset-y-0 left-0 z-50 flex w-16 flex-col items-center gap-1 border-r border-sidebar-border bg-sidebar py-3 transition-transform duration-200 lg:translate-x-0',
+          'fixed inset-y-0 left-0 z-50 flex w-20 flex-col items-center gap-1 border-r border-sidebar-border bg-sidebar transition-transform duration-200 lg:translate-x-0',
           isOpen ? 'translate-x-0' : '-translate-x-full',
         )}
       >
-        <Logo className="mb-2 h-9 w-9 shrink-0" />
+        <div className="flex h-16 w-full shrink-0 items-center justify-center border-b border-sidebar-border">
+          <Logo className="h-9 w-9" />
+        </div>
 
-        <nav className="flex flex-1 flex-col items-center gap-1.5 overflow-y-auto">
+        <nav className="flex flex-1 flex-col items-center gap-1.5 py-3">
           {modules.map((module) => {
             const Icon = getIcon(module.icon)
             const isActive = activeModuleId === module.id
