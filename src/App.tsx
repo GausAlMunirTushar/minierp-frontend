@@ -4,9 +4,11 @@ import { AppLayout } from '@/components/layout/AppLayout'
 import { ProtectedRoute } from '@/components/routing/ProtectedRoute'
 import { DashboardPage } from '@/pages/DashboardPage'
 import { LoginPage } from '@/pages/LoginPage'
+import { CategoriesPage } from '@/pages/CategoriesPage'
 import { ProductsPage } from '@/pages/ProductsPage'
 import { RolesPage } from '@/pages/RolesPage'
 import { SalesPage } from '@/pages/SalesPage'
+import { SalesReportsPage } from '@/pages/SalesReportsPage'
 
 export default function App() {
   return (
@@ -42,6 +44,22 @@ export default function App() {
           element={
             <ProtectedRoute permissions={['sales.create']}>
               <SalesPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="sales/reports"
+          element={
+            <ProtectedRoute permissions={['sales.view']}>
+              <SalesReportsPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="products/categories"
+          element={
+            <ProtectedRoute permissions={['products.view']}>
+              <CategoriesPage />
             </ProtectedRoute>
           }
         />

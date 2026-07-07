@@ -1,4 +1,4 @@
-import { Boxes, LayoutDashboard, Package, Receipt, ShieldCheck, type LucideIcon } from 'lucide-react'
+import { BarChart3, Boxes, LayoutDashboard, Package, Receipt, ShieldCheck, Tags, type LucideIcon } from 'lucide-react'
 
 const iconMap = {
   LayoutDashboard,
@@ -6,6 +6,8 @@ const iconMap = {
   Package,
   Receipt,
   ShieldCheck,
+  Tags,
+  BarChart3,
 } satisfies Record<string, LucideIcon>
 
 export type IconName = keyof typeof iconMap
