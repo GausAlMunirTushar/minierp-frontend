@@ -8,6 +8,7 @@ import { getApiErrorMessage } from '@/apis/configs'
 import type { SaleItemInput } from '@/apis/types/sale_type'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { Select } from '@/components/ui/select'
 import { ErrorState } from '@/components/ui/state'
 import { FormRowSkeleton } from '@/components/ui/skeletons'
 import { useCreateSale, useProducts } from '@/hooks/useInventoryApi'
@@ -120,35 +121,30 @@ export function SaleForm({ onSuccess, onCancel }: { onSuccess: () => void; onCan
             key={index}
             className="grid gap-3 rounded-md border border-border p-3 md:grid-cols-[1fr_150px_160px_auto]"
           >
-            <label className="space-y-1.5 text-sm font-medium text-foreground">
-              <span>{t('product')}</span>
-              <select
-                value={item.product}
-                onChange={(event) => updateItem(index, { product: event.target.value })}
-                className="w-full rounded-md border border-input bg-background px-3 py-2 text-foreground outline-none focus:border-ring"
-              >
-                <option value="">{t('selectProduct')}</option>
-                {products.map((productItem) => {
-                  const selectedElsewhere =
-                    selectedProducts.includes(productItem._id) && productItem._id !== item.product
-                  const outOfStock = productItem.stockQuantity <= 0
+            <Select
+              label={t('product')}
+              value={item.product}
+              onChange={(event) => updateItem(index, { product: event.target.value })}
+              placeholder={t('selectProduct')}
+              error={errors[index]?.product}
+            >
+              {products.map((productItem) => {
+                const selectedElsewhere =
+                  selectedProducts.includes(productItem._id) && productItem._id !== item.product
+                const outOfStock = productItem.stockQuantity <= 0
 
-                  return (
-                    <option
-                      key={productItem._id}
-                      value={productItem._id}
-                      disabled={selectedElsewhere || outOfStock}
-                    >
-                      {productItem.name} - {t('stock')} {productItem.stockQuantity}
-                      {outOfStock ? ` (${t('outOfStock')})` : ''}
-                    </option>
-                  )
-                })}
-              </select>
-              {errors[index]?.product && (
-                <span className="text-xs text-destructive">{errors[index]?.product}</span>
-              )}
-            </label>
+                return (
+                  <option
+                    key={productItem._id}
+                    value={productItem._id}
+                    disabled={selectedElsewhere || outOfStock}
+                  >
+                    {productItem.name} - {t('stock')} {productItem.stockQuantity}
+                    {outOfStock ? ` (${t('outOfStock')})` : ''}
+                  </option>
+                )
+              })}
+            </Select>
             <Input
               label={t('quantity')}
               type="number"

@@ -17,6 +17,7 @@ import { DataTable } from '@/components/ui/data-table/data-table'
 import { DataTableColumnHeader } from '@/components/ui/data-table/data-table-column-header'
 import { Dialog } from '@/components/ui/dialog'
 import { EmptyState, ErrorState } from '@/components/ui/state'
+import { Select } from '@/components/ui/select'
 import { UI_CONSTANTS } from '@/configs/constants'
 import { useAuth } from '@/hooks/useAuth'
 import { useDebouncedValue } from '@/hooks/useDebouncedValue'
@@ -229,30 +230,24 @@ export function ProductsPage() {
             className="w-full rounded-md border border-input bg-background py-2 pl-10 pr-3 text-sm text-foreground outline-none focus:border-ring"
           />
         </label>
-        <select
+        <Select
           value={category}
           onChange={(event) => updateParam('category', event.target.value)}
-          className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground outline-none focus:border-ring"
+          placeholder={t('filterByCategory')}
+          options={categoryOptions.map((c) => ({ value: c.name, label: c.name }))}
           aria-label={t('filterByCategory')}
-        >
-          <option value="">{t('filterByCategory')}</option>
-          {categoryOptions.map((categoryItem) => (
-            <option key={categoryItem._id} value={categoryItem.name}>
-              {categoryItem.name}
-            </option>
-          ))}
-        </select>
-        <select
+        />
+        <Select
           value={sort}
           onChange={(event) => updateParam('sort', event.target.value)}
-          className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground outline-none focus:border-ring"
+          options={[
+            { value: '-createdAt', label: t('newest') },
+            { value: 'createdAt', label: t('oldest') },
+            { value: 'name', label: t('nameAsc') },
+            { value: 'stockQuantity', label: t('stockLow') },
+          ]}
           aria-label={t('sortBy')}
-        >
-          <option value="-createdAt">{t('newest')}</option>
-          <option value="createdAt">{t('oldest')}</option>
-          <option value="name">{t('nameAsc')}</option>
-          <option value="stockQuantity">{t('stockLow')}</option>
-        </select>
+        />
       </div>
 
       <Card>

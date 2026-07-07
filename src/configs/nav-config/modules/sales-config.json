@@ -11,6 +11,13 @@
         "icon": "Receipt",
         "path": "/sales",
         "required_permissions": ["sales.create"]
+      },
+      {
+        "id": "sales-reports",
+        "label": "salesReports",
+        "icon": "BarChart3",
+        "path": "/sales/reports",
+        "required_permissions": ["sales.view"]
       }
     ]
   }

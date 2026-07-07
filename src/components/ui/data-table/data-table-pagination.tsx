@@ -2,6 +2,7 @@ import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from 'lucide-r
 import { useTranslation } from 'react-i18next'
 
 import { Button } from '@/components/ui/button'
+import { Select } from '@/components/ui/select'
 
 export function DataTablePagination({
   page,
@@ -37,17 +38,12 @@ export function DataTablePagination({
       <div className="flex flex-wrap items-center gap-4">
         <label className="flex items-center gap-2 text-sm">
           {t('rowsPerPage')}
-          <select
+          <Select
             value={pageSize}
             onChange={(event) => onPageSizeChange(Number(event.target.value))}
-            className="rounded-md border border-input bg-background px-2 py-1 text-foreground outline-none focus:border-ring"
-          >
-            {[10, 20, 25, 30, 40, 50].map((size) => (
-              <option key={size} value={size}>
-                {size}
-              </option>
-            ))}
-          </select>
+            options={[10, 20, 25, 30, 40, 50].map((size) => ({ value: String(size), label: String(size) }))}
+            className="w-auto px-2 py-1"
+          />
         </label>
 
         <span className="font-medium">

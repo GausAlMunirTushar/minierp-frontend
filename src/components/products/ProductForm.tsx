@@ -8,6 +8,7 @@ import type { Product, ProductPayload } from '@/apis/types/product_type'
 import { Button } from '@/components/ui/button'
 import { FileUpload } from '@/components/ui/file-upload'
 import { Input } from '@/components/ui/input'
+import { Select } from '@/components/ui/select'
 import { useCategories, useCreateProduct, useUpdateProduct } from '@/hooks/useInventoryApi'
 
 type ProductFormErrors = Partial<Record<keyof ProductPayload, string>>
@@ -151,22 +152,14 @@ export function ProductForm({
           onChange={(event) => setForm({ ...form, sku: event.target.value })}
           error={errors.sku}
         />
-        <label className="block space-y-1.5 text-sm font-medium text-foreground">
-          <span>{t('category')}</span>
-          <select
-            value={form.category}
-            onChange={(event) => setForm({ ...form, category: event.target.value })}
-            className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground outline-none focus:border-ring focus:ring-2 focus:ring-ring/20"
-          >
-            <option value="">{t('selectCategory')}</option>
-            {categoryOptions.map((name) => (
-              <option key={name} value={name}>
-                {name}
-              </option>
-            ))}
-          </select>
-          {errors.category && <span className="text-xs text-destructive">{errors.category}</span>}
-        </label>
+        <Select
+          label={t('category')}
+          value={form.category}
+          onChange={(event) => setForm({ ...form, category: event.target.value })}
+          placeholder={t('selectCategory')}
+          options={categoryOptions.map((name) => ({ value: name, label: name }))}
+          error={errors.category}
+        />
         <Input
           label={t('purchasePrice')}
           type="number"

@@ -11,6 +11,13 @@
         "icon": "Package",
         "path": "/products",
         "required_permissions": ["products.view"]
+      },
+      {
+        "id": "categories",
+        "label": "categories",
+        "icon": "Tags",
+        "path": "/products/categories",
+        "required_permissions": ["products.view"]
       }
     ]
   }

@@ -31,8 +31,8 @@
       "enabled": true,
       "required_permissions": ["products.view"],
       "config_file": "products-config.json",
-      "has_sidebar": false,
-      "contain_menus": ["products"]
+      "has_sidebar": true,
+      "contain_menus": ["products", "categories"]
     },
     {
       "id": "sales",
@@ -43,8 +43,8 @@
       "enabled": true,
       "required_permissions": ["sales.create"],
       "config_file": "sales-config.json",
-      "has_sidebar": false,
-      "contain_menus": ["sales"]
+      "has_sidebar": true,
+      "contain_menus": ["sales", "sales-reports"]
     },
     {
       "id": "roles",
