@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import { Outlet, useLocation } from 'react-router-dom'
 
+import { MobileNav } from '@/components/layout/MobileNav'
 import { ModuleBar } from '@/components/layout/ModuleBar'
 import { ModuleSidebar } from '@/components/layout/ModuleSidebar'
 import { Topbar } from '@/components/layout/Topbar'
@@ -8,7 +9,6 @@ import { getActiveModule, getModuleConfig } from '@/lib/config-utils'
 import { cn } from '@/lib/utils'
 
 export function AppLayout() {
-  const [mobileNavOpen, setMobileNavOpen] = useState(false)
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   const { pathname } = useLocation()
 
@@ -18,14 +18,11 @@ export function AppLayout() {
     [activeModule],
   )
 
-  const closeMobileNav = () => setMobileNavOpen(false)
   const toggleSidebarCollapsed = () => setSidebarCollapsed((current) => !current)
 
   return (
     <div className="min-h-screen bg-background">
       <ModuleBar
-        isOpen={mobileNavOpen}
-        onClose={closeMobileNav}
         hasSidebar={Boolean(moduleConfig)}
         sidebarCollapsed={sidebarCollapsed}
         onToggleSidebar={toggleSidebarCollapsed}
@@ -33,12 +30,13 @@ export function AppLayout() {
       {moduleConfig && (
         <ModuleSidebar
           config={moduleConfig}
-          isOpen={mobileNavOpen}
-          onNavigate={closeMobileNav}
+          isOpen={false}
+          onNavigate={() => {}}
           collapsed={sidebarCollapsed}
           onToggleCollapse={toggleSidebarCollapsed}
         />
       )}
+      <MobileNav />
 
       <div
         className={cn(
@@ -46,8 +44,8 @@ export function AppLayout() {
           moduleConfig && !sidebarCollapsed ? 'lg:pl-[336px]' : 'lg:pl-20',
         )}
       >
-        <Topbar onMenuClick={() => setMobileNavOpen(true)} />
-        <main className="flex-1 p-4 lg:p-6">
+        <Topbar />
+        <main className="flex-1 p-4 pb-24 lg:p-6">
           <Outlet />
         </main>
       </div>

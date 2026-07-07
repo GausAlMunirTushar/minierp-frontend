@@ -43,16 +43,6 @@ export function Topbar() {
   return (
     <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-sidebar-border bg-sidebar/95 px-4 backdrop-blur lg:px-6">
       <div className="flex items-center gap-3">
-        <Button
-          type="button"
-          variant="ghost"
-          className="lg:hidden"
-          aria-label={t('openMenu')}
-          onClick={onMenuClick}
-        >
-          <Menu size={18} />
-        </Button>
-
         <nav className="hidden items-center gap-2 text-sm text-muted-foreground sm:flex">
           {breadcrumbs.map((crumb, index) => (
             <span key={crumb} className="flex items-center gap-2">
