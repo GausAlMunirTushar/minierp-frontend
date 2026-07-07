@@ -8,7 +8,8 @@ import { useProductsQuery } from '@/apis/queries/product_queries'
 import { BarChart, ChartCard, PieChart, StatCard } from '@/components/charts'
 import { PageHeader } from '@/components/layout/PageHeader'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
-import { EmptyState, ErrorState, LoadingState } from '@/components/ui/state'
+import { EmptyState, ErrorState } from '@/components/ui/state'
+import { TableSkeleton } from '@/components/ui/skeletons'
 import { useDashboardStats } from '@/hooks/useInventoryApi'
 
 export function DashboardPage() {
@@ -36,10 +37,6 @@ export function DashboardPage() {
     return Array.from(counts.entries()).map(([category, count]) => ({ category, count }))
   }, [categoriesQuery.data?.data])
 
-  if (isLoading) {
-    return <LoadingState label={t('loadingDashboard')} />
-  }
-
   if (isError) {
     return (
       <ErrorState
@@ -56,18 +53,35 @@ export function DashboardPage() {
       <PageHeader title={t('dashboard')} description={t('inventoryOverview')} />
 
       <div className="grid gap-4 md:grid-cols-3">
-        <StatCard title={t('totalProducts')} value={stats?.totalProducts ?? 0} icon={<Boxes />} color="blue" />
-        <StatCard title={t('totalSales')} value={stats?.totalSales ?? 0} icon={<Receipt />} color="green" />
+        <StatCard
+          title={t('totalProducts')}
+          value={stats?.totalProducts ?? 0}
+          icon={<Boxes />}
+          color="blue"
+          isLoading={isLoading}
+        />
+        <StatCard
+          title={t('totalSales')}
+          value={stats?.totalSales ?? 0}
+          icon={<Receipt />}
+          color="green"
+          isLoading={isLoading}
+        />
         <StatCard
           title={t('lowStock')}
           value={stats?.lowStockProducts.length ?? 0}
           icon={<AlertTriangle />}
           color="red"
+          isLoading={isLoading}
         />
       </div>
 
       <div className="grid gap-4 lg:grid-cols-2">
-        <ChartCard title={t('stockLevelsChartTitle')} subtitle={t('stockLevelsChartSubtitle')}>
+        <ChartCard
+          title={t('stockLevelsChartTitle')}
+          subtitle={t('stockLevelsChartSubtitle')}
+          isLoading={isLoading}
+        >
           {stockLevelData.length ? (
             <BarChart data={stockLevelData} dataKey="name" valueKey="stockQuantity" color="#ef4444" />
           ) : (
@@ -93,7 +107,9 @@ export function DashboardPage() {
           <h2 className="font-semibold text-card-foreground">{t('lowStockProducts')}</h2>
         </CardHeader>
         <CardContent>
-          {stats?.lowStockProducts.length ? (
+          {isLoading ? (
+            <TableSkeleton columns={4} rows={4} />
+          ) : stats?.lowStockProducts.length ? (
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>

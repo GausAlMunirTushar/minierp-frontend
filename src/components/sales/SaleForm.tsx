@@ -8,7 +8,8 @@ import { getApiErrorMessage } from '@/apis/configs'
 import type { SaleItemInput } from '@/apis/types/sale_type'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { ErrorState, LoadingState } from '@/components/ui/state'
+import { ErrorState } from '@/components/ui/state'
+import { FormRowSkeleton } from '@/components/ui/skeletons'
 import { useCreateSale, useProducts } from '@/hooks/useInventoryApi'
 import { formatCurrency } from '@/utils/currency'
 
@@ -93,10 +94,6 @@ export function SaleForm({ onSuccess, onCancel }: { onSuccess: () => void; onCan
     })
   }
 
-  if (productsQuery.isLoading) {
-    return <LoadingState label={t('loadingProducts')} />
-  }
-
   if (productsQuery.isError) {
     return (
       <ErrorState
@@ -106,6 +103,10 @@ export function SaleForm({ onSuccess, onCancel }: { onSuccess: () => void; onCan
         retryLabel={t('retry')}
       />
     )
+  }
+
+  if (productsQuery.isLoading) {
+    return <FormRowSkeleton rows={items.length} />
   }
 
   return (

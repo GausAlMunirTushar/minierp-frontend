@@ -9,7 +9,8 @@ import type { Category } from '@/apis/types/category_type'
 import { Button } from '@/components/ui/button'
 import { ConfirmDialog } from '@/components/ui/confirm-dialog'
 import { Input } from '@/components/ui/input'
-import { EmptyState, LoadingState } from '@/components/ui/state'
+import { EmptyState } from '@/components/ui/state'
+import { ListSkeleton } from '@/components/ui/skeletons'
 import { useCategories, useCreateCategory, useDeleteCategory } from '@/hooks/useInventoryApi'
 
 export function CategoryManager() {
@@ -76,7 +77,7 @@ export function CategoryManager() {
       </form>
 
       {categoriesQuery.isLoading ? (
-        <LoadingState label={t('loading')} />
+        <ListSkeleton rows={4} />
       ) : categoryList.length === 0 ? (
         <EmptyState title={t('noCategories')} />
       ) : (

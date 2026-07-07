@@ -6,17 +6,14 @@ import { PageHeader } from '@/components/layout/PageHeader'
 import { RoleCard } from '@/components/roles/RoleCard'
 import { ViewToggle } from '@/components/roles/ViewToggle'
 import type { PermissionView } from '@/components/roles/ViewToggle'
-import { ErrorState, LoadingState } from '@/components/ui/state'
+import { ErrorState } from '@/components/ui/state'
+import { RoleCardSkeleton } from '@/components/ui/skeletons'
 import { useRoles } from '@/hooks/useRoleApi'
 
 export function RolesPage() {
   const { t } = useTranslation()
   const rolesQuery = useRoles()
   const [view, setView] = useState<PermissionView>('grid')
-
-  if (rolesQuery.isLoading) {
-    return <LoadingState label={t('loading')} />
-  }
 
   if (rolesQuery.isError) {
     return (
@@ -41,9 +38,11 @@ export function RolesPage() {
         }
       />
       <div className="space-y-4">
-        {roles.map((role) => (
-          <RoleCard key={role._id} role={role} allPermissions={allPermissions} view={view} />
-        ))}
+        {rolesQuery.isLoading
+          ? Array.from({ length: 3 }).map((_, index) => <RoleCardSkeleton key={index} />)
+          : roles.map((role) => (
+              <RoleCard key={role._id} role={role} allPermissions={allPermissions} view={view} />
+            ))}
       </div>
     </div>
   )
