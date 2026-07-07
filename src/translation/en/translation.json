@@ -92,5 +92,13 @@
   "accessDenied": "Access denied",
   "accessDeniedDescription": "You do not have permission to view this page.",
   "openMenu": "Open menu",
-  "close": "Close"
+  "close": "Close",
+  "columns": "Columns",
+  "toggleColumns": "Toggle columns",
+  "sortAscending": "Ascending",
+  "sortDescending": "Descending",
+  "hideColumn": "Hide",
+  "rowsPerPage": "Rows per page",
+  "showing": "Showing",
+  "noResultsFound": "No results found."
 }

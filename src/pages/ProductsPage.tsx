@@ -1,4 +1,5 @@
 import { FormEvent, useEffect, useMemo, useState } from 'react'
+import type { ColumnDef } from '@tanstack/react-table'
 import { Edit, Package, Plus, Search, Trash2, X } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { useSearchParams } from 'react-router-dom'
@@ -10,10 +11,11 @@ import { Alert } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { ConfirmDialog } from '@/components/ui/confirm-dialog'
+import { DataTable } from '@/components/ui/data-table/data-table'
+import { DataTableColumnHeader } from '@/components/ui/data-table/data-table-column-header'
 import { FileUpload } from '@/components/ui/file-upload'
 import { Input } from '@/components/ui/input'
-import { Pagination } from '@/components/ui/pagination'
-import { EmptyState, ErrorState, LoadingState } from '@/components/ui/state'
+import { EmptyState, ErrorState } from '@/components/ui/state'
 import { UI_CONSTANTS } from '@/configs/constants'
 import { useAuth } from '@/hooks/useAuth'
 import { useDebouncedValue } from '@/hooks/useDebouncedValue'
@@ -115,6 +117,13 @@ export function ProductsPage() {
     setSearchParams(nextParams)
   }
 
+  const setLimit = (nextLimit: number) => {
+    const nextParams = new URLSearchParams(searchParams)
+    nextParams.set('limit', String(nextLimit))
+    nextParams.set('page', '1')
+    setSearchParams(nextParams)
+  }
+
   const resetForm = () => {
     setEditing(null)
     setForm(emptyProduct)
@@ -209,6 +218,79 @@ export function ProductsPage() {
       },
     })
   }
+
+  const columns = useMemo<ColumnDef<Product>[]>(
+    () => [
+      {
+        accessorKey: 'name',
+        header: ({ column }) => <DataTableColumnHeader column={column} title={t('product')} />,
+        cell: ({ row }) => {
+          const product = row.original
+          return (
+            <div className="flex items-center gap-3">
+              {product.image ? (
+                <img
+                  src={`${ASSET_BASE_URL}${product.image}`}
+                  alt={product.name}
+                  className="h-10 w-10 rounded object-cover"
+                />
+              ) : (
+                <Package className="h-10 w-10 rounded border p-2" />
+              )}
+              <span className="font-medium text-slate-900">{product.name}</span>
+            </div>
+          )
+        },
+      },
+      {
+        accessorKey: 'sku',
+        header: ({ column }) => <DataTableColumnHeader column={column} title={t('sku')} />,
+      },
+      {
+        accessorKey: 'category',
+        header: ({ column }) => <DataTableColumnHeader column={column} title={t('category')} />,
+      },
+      {
+        accessorKey: 'sellingPrice',
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title={t('sellingPrice')} className="justify-end" />
+        ),
+        cell: ({ row }) => <div className="text-right">{formatCurrency(row.original.sellingPrice)}</div>,
+      },
+      {
+        accessorKey: 'stockQuantity',
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title={t('stock')} className="justify-end" />
+        ),
+        cell: ({ row }) => <div className="text-right font-medium">{row.original.stockQuantity}</div>,
+      },
+      {
+        id: 'actions',
+        header: () => <div className="text-right">{t('actions')}</div>,
+        enableSorting: false,
+        enableHiding: false,
+        cell: ({ row }) => {
+          const product = row.original
+          return (
+            <div className="flex justify-end gap-2">
+              {canUpdate && (
+                <Button variant="outline" type="button" onClick={() => startEdit(product)}>
+                  <Edit size={16} />
+                </Button>
+              )}
+              {canDelete && (
+                <Button variant="danger" type="button" onClick={() => setProductToDelete(product)}>
+                  <Trash2 size={16} />
+                </Button>
+              )}
+            </div>
+          )
+        },
+      },
+    ],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [canUpdate, canDelete, t],
+  )
 
   return (
     <div className="space-y-6">
@@ -327,11 +409,7 @@ export function ProductsPage() {
 
       <Card>
         <CardContent className="p-0">
-          {productsQuery.isLoading ? (
-            <div className="p-4">
-              <LoadingState label={t('loadingProducts')} />
-            </div>
-          ) : productsQuery.isError ? (
+          {productsQuery.isError ? (
             <div className="p-4">
               <ErrorState
                 title={t('loadingProducts')}
@@ -340,80 +418,25 @@ export function ProductsPage() {
                 retryLabel={t('retry')}
               />
             </div>
-          ) : products.length === 0 ? (
+          ) : !productsQuery.isLoading && products.length === 0 ? (
             <div className="p-4">
               <EmptyState title={t('noProductsFound')} description={t('noProductsDescription')} />
             </div>
           ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead className="bg-slate-50 text-left text-slate-500">
-                  <tr>
-                    <th className="px-4 py-3">{t('product')}</th>
-                    <th>{t('sku')}</th>
-                    <th>{t('category')}</th>
-                    <th className="text-right">{t('sellingPrice')}</th>
-                    <th className="text-right">{t('stock')}</th>
-                    <th className="px-4 text-right">{t('actions')}</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {products.map((product) => (
-                    <tr key={product._id} className="border-t border-slate-100">
-                      <td className="px-4 py-3">
-                        <div className="flex items-center gap-3">
-                          {product.image ? (
-                            <img
-                              src={`${ASSET_BASE_URL}${product.image}`}
-                              alt={product.name}
-                              className="h-10 w-10 rounded object-cover"
-                            />
-                          ) : (
-                            <Package className="h-10 w-10 rounded border p-2" />
-                          )}
-                          <span className="font-medium text-slate-900">{product.name}</span>
-                        </div>
-                      </td>
-                      <td>{product.sku}</td>
-                      <td>{product.category}</td>
-                      <td className="text-right">{formatCurrency(product.sellingPrice)}</td>
-                      <td className="text-right font-medium">{product.stockQuantity}</td>
-                      <td className="px-4">
-                        <div className="flex justify-end gap-2">
-                          {canUpdate && (
-                            <Button variant="outline" type="button" onClick={() => startEdit(product)}>
-                              <Edit size={16} />
-                            </Button>
-                          )}
-                          {canDelete && (
-                            <Button
-                              variant="danger"
-                              type="button"
-                              onClick={() => setProductToDelete(product)}
-                            >
-                              <Trash2 size={16} />
-                            </Button>
-                          )}
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+            <DataTable
+              columns={columns}
+              data={products}
+              isLoading={productsQuery.isLoading}
+              pagination={{
+                page,
+                pageCount: meta?.totalPages ?? 1,
+                pageSize: limit,
+                totalCount: meta?.total ?? 0,
+                onPageChange: setPage,
+                onPageSizeChange: setLimit,
+              }}
+            />
           )}
-          <Pagination
-            meta={meta}
-            page={page}
-            onPageChange={setPage}
-            labels={{
-              page: t('page'),
-              of: t('of'),
-              previous: t('previous'),
-              next: t('next'),
-              total: t('total'),
-            }}
-          />
         </CardContent>
       </Card>
 

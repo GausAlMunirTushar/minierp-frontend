@@ -1,13 +1,16 @@
 import { FormEvent, useMemo, useState } from 'react'
+import type { ColumnDef } from '@tanstack/react-table'
 import { Plus, Receipt, Trash2 } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
 import { getApiErrorMessage } from '@/apis/configs'
-import type { SaleItemInput } from '@/apis/types/sale_type'
+import type { Sale, SaleItemInput } from '@/apis/types/sale_type'
 import { PageHeader } from '@/components/layout/PageHeader'
 import { Alert } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
+import { DataTable } from '@/components/ui/data-table/data-table'
+import { DataTableColumnHeader } from '@/components/ui/data-table/data-table-column-header'
 import { Input } from '@/components/ui/input'
 import { EmptyState, ErrorState, LoadingState } from '@/components/ui/state'
 import { useCreateSale, useProducts, useSales } from '@/hooks/useInventoryApi'
@@ -84,6 +87,33 @@ export function SalesPage() {
     setErrors(nextErrors)
     return Object.keys(nextErrors).length === 0
   }
+
+  const saleColumns = useMemo<ColumnDef<Sale>[]>(
+    () => [
+      {
+        accessorKey: 'createdAt',
+        header: ({ column }) => <DataTableColumnHeader column={column} title={t('date')} />,
+        cell: ({ row }) => formatDateTime(row.original.createdAt),
+      },
+      {
+        id: 'items',
+        accessorFn: (row) => row.items.map((item) => item.name).join(', '),
+        header: t('items'),
+        enableSorting: false,
+      },
+      {
+        accessorKey: 'grandTotal',
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title={t('total')} className="justify-end" />
+        ),
+        cell: ({ row }) => (
+          <div className="text-right font-semibold">{formatCurrency(row.original.grandTotal)}</div>
+        ),
+      },
+    ],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [t],
+  )
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -219,39 +249,26 @@ export function SalesPage() {
         <CardHeader>
           <h2 className="font-semibold text-slate-900">{t('recentSales')}</h2>
         </CardHeader>
-        <CardContent>
-          {salesQuery.isLoading ? (
-            <LoadingState label={t('loadingSales')} />
-          ) : salesQuery.isError ? (
-            <ErrorState
-              title={t('loadingSales')}
-              description={getApiErrorMessage(salesQuery.error)}
-              onRetry={() => void salesQuery.refetch()}
-              retryLabel={t('retry')}
-            />
-          ) : (salesQuery.data?.data ?? []).length === 0 ? (
-            <EmptyState title={t('noSalesFound')} description={t('noSalesDescription')} />
-          ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead className="text-left text-slate-500">
-                  <tr className="border-b">
-                    <th className="py-3">{t('date')}</th>
-                    <th>{t('items')}</th>
-                    <th className="text-right">{t('total')}</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {(salesQuery.data?.data ?? []).map((sale) => (
-                    <tr key={sale._id} className="border-b last:border-0">
-                      <td className="py-3">{formatDateTime(sale.createdAt)}</td>
-                      <td>{sale.items.map((saleItem) => saleItem.name).join(', ')}</td>
-                      <td className="text-right font-semibold">{formatCurrency(sale.grandTotal)}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+        <CardContent className="p-0">
+          {salesQuery.isError ? (
+            <div className="p-4">
+              <ErrorState
+                title={t('loadingSales')}
+                description={getApiErrorMessage(salesQuery.error)}
+                onRetry={() => void salesQuery.refetch()}
+                retryLabel={t('retry')}
+              />
             </div>
+          ) : !salesQuery.isLoading && (salesQuery.data?.data ?? []).length === 0 ? (
+            <div className="p-4">
+              <EmptyState title={t('noSalesFound')} description={t('noSalesDescription')} />
+            </div>
+          ) : (
+            <DataTable
+              columns={saleColumns}
+              data={salesQuery.data?.data ?? []}
+              isLoading={salesQuery.isLoading}
+            />
           )}
         </CardContent>
       </Card>
