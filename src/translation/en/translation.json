@@ -110,5 +110,6 @@
   "lightMode": "Switch to light mode",
   "darkMode": "Switch to dark mode",
   "showPassword": "Show password",
-  "hidePassword": "Hide password"
+  "hidePassword": "Hide password",
+  "notifications": "Notifications"
 }

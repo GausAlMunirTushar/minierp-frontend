@@ -140,7 +140,7 @@
   /* Main theme colors */
   --primary: hsl(164, 70%, 45%); /* Bright teal for dark bg */
   --primary-foreground: hsl(0, 0%, 100%);
-  --secondary: hsl(215, 15%, 15%); /* GitHub-style muted surface */
+  --secondary: hsl(219, 34%, 19%); /* Muted navy surface */
   --secondary-foreground: hsl(164, 70%, 60%);
   --destructive: hsl(3, 93%, 63%); /* GitHub danger */
   --destructive-foreground: hsl(0, 0%, 100%);
@@ -149,35 +149,35 @@
   --warning: hsl(41, 72%, 48%); /* GitHub attention */
   --warning-foreground: hsl(0, 0%, 100%);
   --info: hsl(212, 100%, 67%); /* GitHub accent blue */
-  --info-foreground: hsl(216, 28%, 7%);
+  --info-foreground: hsl(219, 34%, 13%);
 
   /* Background and surface colors */
-  --background: hsl(216, 28%, 7%); /* GitHub canvas.default #0d1117 */
-  --foreground: hsl(208, 35%, 93%); /* GitHub fg.default #e6edf3 */
-  --card: hsl(215, 21%, 11%); /* GitHub canvas.subtle #161b22 */
+  --background: hsl(219, 34%, 13%); /* Brand navy #161E2D */
+  --foreground: hsl(208, 35%, 93%);
+  --card: hsl(219, 34%, 17%); /* Navy, one step lighter than bg */
   --card-foreground: hsl(208, 35%, 93%);
-  --popover: hsl(215, 21%, 11%);
+  --popover: hsl(219, 34%, 17%);
   --popover-foreground: hsl(208, 35%, 93%);
 
   /* Border and accent colors */
-  --border: hsl(212, 12%, 21%); /* GitHub border.default #30363d */
-  --input: hsl(212, 12%, 21%);
+  --border: hsl(219, 32%, 22%);
+  --input: hsl(219, 32%, 22%);
   --ring: hsl(164, 70%, 45%);
-  --accent: hsl(212, 12%, 21%);
+  --accent: hsl(219, 32%, 22%);
   --accent-foreground: hsl(208, 35%, 93%);
-  --muted: hsl(215, 15%, 15%); /* GitHub border.muted #21262d */
-  --muted-foreground: hsl(212, 9%, 58%); /* GitHub fg.muted #8b949e */
+  --muted: hsl(219, 34%, 19%);
+  --muted-foreground: hsl(212, 9%, 58%);
 
   /* Sidebar and modular bar colors */
-  --sidebar: hsl(218, 30%, 5%); /* slightly deeper than canvas for depth */
+  --sidebar: hsl(219, 34%, 11%); /* slightly deeper than canvas for depth */
   --sidebar-foreground: hsl(208, 35%, 93%);
   --sidebar-primary: hsl(164, 70%, 45%);
   --sidebar-primary-foreground: hsl(0, 0%, 100%);
-  --sidebar-accent: hsl(212, 12%, 21%);
+  --sidebar-accent: hsl(219, 32%, 22%);
   --sidebar-accent-foreground: hsl(164, 70%, 60%);
-  --sidebar-border: hsl(212, 12%, 21%);
+  --sidebar-border: hsl(219, 32%, 22%);
   --sidebar-ring: hsl(164, 70%, 45%);
-  --modularbar: hsl(218, 30%, 5%);
+  --modularbar: hsl(219, 34%, 11%);
 
   /* Chart colors */
   --chart-1: hsl(164, 70%, 45%);

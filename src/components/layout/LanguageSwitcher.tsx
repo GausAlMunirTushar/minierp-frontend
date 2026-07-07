@@ -1,27 +1,49 @@
 import { useTranslation } from 'react-i18next'
 
 import { STORAGE_KEYS } from '@/configs/constants'
+import { cn } from '@/lib/utils'
 
 export function LanguageSwitcher() {
   const { i18n, t } = useTranslation()
+  const language = i18n.language === 'bn' ? 'bn' : 'en'
 
-  const changeLanguage = (language: string) => {
-    localStorage.setItem(STORAGE_KEYS.LOCALE, language)
-    void i18n.changeLanguage(language)
+  const toggleLanguage = () => {
+    const next = language === 'bn' ? 'en' : 'bn'
+    localStorage.setItem(STORAGE_KEYS.LOCALE, next)
+    void i18n.changeLanguage(next)
   }
 
   return (
-    <label className="flex items-center gap-2 text-sm text-muted-foreground">
-      <span>{t('language')}</span>
-      <select
-        value={i18n.language}
-        onChange={(event) => changeLanguage(event.target.value)}
-        className="rounded-md border border-input bg-background px-2 py-1 text-foreground outline-none focus:border-ring"
-        aria-label={t('language')}
-      >
-        <option value="en">EN</option>
-        <option value="bn">BN</option>
-      </select>
-    </label>
+    <button
+      type="button"
+      onClick={toggleLanguage}
+      aria-label={t('language')}
+      className="relative flex h-9 w-36 select-none items-center rounded-full border border-border bg-muted/80 p-1 backdrop-blur-sm"
+    >
+      <span
+        className={cn(
+          'absolute h-[28px] w-[68px] rounded-full bg-card shadow-sm transition-all duration-300 ease-in-out',
+          language === 'bn' ? 'translate-x-0' : 'translate-x-[68px]',
+        )}
+      />
+      <span className="relative z-10 flex w-full justify-between px-1">
+        <span
+          className={cn(
+            'flex-1 text-center text-xs font-medium transition-colors duration-300',
+            language === 'bn' ? 'text-foreground' : 'text-muted-foreground',
+          )}
+        >
+          বাংলা
+        </span>
+        <span
+          className={cn(
+            'flex-1 text-center text-xs font-medium transition-colors duration-300',
+            language === 'en' ? 'text-foreground' : 'text-muted-foreground',
+          )}
+        >
+          English
+        </span>
+      </span>
+    </button>
   )
 }

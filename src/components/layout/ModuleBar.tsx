@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { NavLink, useLocation } from 'react-router-dom'
 
 import { Logo } from '@/components/common/Logo'
+import { Tooltip } from '@/components/ui/tooltip'
 import { useAuth } from '@/hooks/useAuth'
 import { getAccessibleModules, getActiveModule } from '@/lib/config-utils'
 import { getIcon } from '@/lib/icon-mapper'
@@ -44,21 +45,43 @@ export function ModuleBar({ isOpen, onClose }: { isOpen: boolean; onClose: () =>
             const isActive = activeModuleId === module.id
 
             return (
-              <NavLink
-                key={module.id}
-                to={module.path}
-                title={t(module.label)}
-                onClick={onClose}
-                className={cn(
-                  'flex w-full flex-col items-center gap-0.5 rounded-lg px-1 py-1.5 transition-colors',
-                  isActive
-                    ? 'bg-sidebar-accent text-sidebar-accent-foreground'
-                    : 'text-sidebar-foreground/60 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground',
-                )}
-              >
-                {Icon && <Icon size={18} />}
-                <span className="w-full truncate text-center text-[9px] font-medium">{t(module.label)}</span>
-              </NavLink>
+              <Tooltip key={module.id} label={t(module.label)} side="right">
+                <NavLink
+                  to={module.path}
+                  onClick={onClose}
+                  className="group relative flex w-full flex-col items-center gap-0.5 rounded-lg px-1 py-1.5"
+                >
+                  {isActive && (
+                    <span className="absolute left-0 top-1/2 h-7 w-1 -translate-y-1/2 rounded-r-full bg-primary" />
+                  )}
+                  <span
+                    className={cn(
+                      'relative flex items-center justify-center transition-all duration-200',
+                      isActive
+                        ? 'scale-110 text-primary'
+                        : 'text-sidebar-foreground/60 group-hover:scale-105 group-hover:text-primary',
+                    )}
+                  >
+                    <span
+                      className={cn(
+                        'absolute inset-0 -z-10 rounded-full bg-primary/20 blur-md transition-opacity duration-200',
+                        isActive ? 'opacity-100' : 'opacity-0 group-hover:opacity-100',
+                      )}
+                    />
+                    {Icon && <Icon size={18} />}
+                  </span>
+                  <span
+                    className={cn(
+                      'w-full truncate text-center text-[9px] font-medium transition-colors duration-200',
+                      isActive
+                        ? 'font-semibold text-primary'
+                        : 'text-sidebar-foreground/60 group-hover:text-primary',
+                    )}
+                  >
+                    {t(module.label)}
+                  </span>
+                </NavLink>
+              </Tooltip>
             )
           })}
         </nav>

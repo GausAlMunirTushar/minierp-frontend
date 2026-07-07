@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { LogOut, Menu, User } from 'lucide-react'
+import { Bell, ChevronDown, LogOut, Menu, User } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { useLocation, useNavigate } from 'react-router-dom'
 
@@ -66,27 +66,39 @@ export function Topbar({ onMenuClick }: { onMenuClick: () => void }) {
         </nav>
       </div>
 
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-2 lg:gap-3">
         <ThemeToggle />
         <LanguageSwitcher />
+
+        <button
+          type="button"
+          className="relative rounded-lg p-2 text-foreground transition-colors hover:bg-accent"
+          aria-label={t('notifications')}
+          title={t('notifications')}
+        >
+          <Bell size={18} />
+          <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-destructive ring-2 ring-background" />
+        </button>
+
         <DropdownMenu>
           <DropdownMenuTrigger>
             <button
               type="button"
               className="flex items-center gap-2 rounded-md px-2 py-1.5 hover:bg-accent"
             >
-              <span className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-xs font-semibold text-primary-foreground">
+              <span className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-primary to-primary/80 text-xs font-semibold text-primary-foreground shadow-inner">
                 {initials ?? <User size={14} />}
               </span>
               <span className="hidden text-left sm:block">
                 <span className="block text-sm font-medium text-foreground">{user?.name}</span>
                 <span className="block text-xs capitalize text-muted-foreground">{user?.role}</span>
               </span>
+              <ChevronDown size={14} className="hidden text-muted-foreground sm:block" />
             </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuItem onClick={handleLogout}>
-              <LogOut size={14} className="mr-2 text-muted-foreground" />
+            <DropdownMenuItem onClick={handleLogout} className="text-destructive hover:bg-destructive/10">
+              <LogOut size={14} className="mr-2" />
               {t('logout')}
             </DropdownMenuItem>
           </DropdownMenuContent>
