@@ -340,6 +340,10 @@ export function CategoriesPage() {
             label={t('categoryName')}
             value={name}
             onChange={(event) => setName(event.target.value)}
+            onBlur={() => {
+              if (!name.trim()) setAddError(t('requiredField'))
+              else setAddError('')
+            }}
             error={addError}
             placeholder={t('categoryName')}
             autoFocus

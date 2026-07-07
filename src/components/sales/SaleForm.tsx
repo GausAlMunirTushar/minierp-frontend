@@ -43,6 +43,41 @@ export function SaleForm({ onSuccess, onCancel }: { onSuccess: () => void; onCan
     )
   }
 
+  const validateField = (index: number, field: keyof SaleItemInput) => {
+    setErrors((current) => {
+      const next = { ...current }
+      const itemErrors = { ...(next[index] ?? {}) } as Partial<Record<keyof SaleItemInput, string>>
+      const item = items[index]
+      const product = productById.get(item.product)
+
+      if (field === 'product') {
+        if (!item.product) {
+          itemErrors.product = t('requiredField')
+        } else {
+          delete itemErrors.product
+        }
+      }
+
+      if (field === 'quantity') {
+        if (!item.quantity || item.quantity <= 0) {
+          itemErrors.quantity = t('positiveNumber')
+        } else if (product && item.quantity > product.stockQuantity) {
+          itemErrors.quantity = t('quantityExceedsStock')
+        } else {
+          delete itemErrors.quantity
+        }
+      }
+
+      if (Object.keys(itemErrors).length > 0) {
+        next[index] = itemErrors
+      } else {
+        delete next[index]
+      }
+
+      return next
+    })
+  }
+
   const validate = () => {
     const nextErrors: SaleErrors = {}
     const seenProducts = new Set<string>()
@@ -125,6 +160,7 @@ export function SaleForm({ onSuccess, onCancel }: { onSuccess: () => void; onCan
               label={t('product')}
               value={item.product}
               onChange={(event) => updateItem(index, { product: event.target.value })}
+              onBlur={() => validateField(index, 'product')}
               placeholder={t('selectProduct')}
               error={errors[index]?.product}
             >
@@ -152,6 +188,7 @@ export function SaleForm({ onSuccess, onCancel }: { onSuccess: () => void; onCan
               max={product?.stockQuantity}
               value={item.quantity}
               onChange={(event) => updateItem(index, { quantity: Number(event.target.value) })}
+              onBlur={() => validateField(index, 'quantity')}
               error={errors[index]?.quantity}
             />
             <div className="space-y-1.5 text-sm font-medium text-foreground">

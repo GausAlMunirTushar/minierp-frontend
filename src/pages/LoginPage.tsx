@@ -18,6 +18,8 @@ type LoginErrors = {
   password?: string
 }
 
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/
+
 export function LoginPage() {
   const { t } = useTranslation()
   const navigate = useNavigate()
@@ -37,12 +39,38 @@ export function LoginPage() {
     [mutation.error],
   )
 
+  const validateField = (field: keyof LoginErrors) => {
+    setErrors((current) => {
+      const next = { ...current }
+
+      if (field === 'email') {
+        if (!email.trim()) {
+          next.email = t('requiredField')
+        } else if (!EMAIL_REGEX.test(email)) {
+          next.email = t('invalidEmail')
+        } else {
+          delete next.email
+        }
+      }
+
+      if (field === 'password') {
+        if (!password.trim()) {
+          next.password = t('requiredField')
+        } else {
+          delete next.password
+        }
+      }
+
+      return next
+    })
+  }
+
   const validate = () => {
     const nextErrors: LoginErrors = {}
 
     if (!email.trim()) {
       nextErrors.email = t('requiredField')
-    } else if (!/^\S+@\S+\.\S+$/.test(email)) {
+    } else if (!EMAIL_REGEX.test(email)) {
       nextErrors.email = t('invalidEmail')
     }
 
@@ -91,6 +119,7 @@ export function LoginPage() {
               type="email"
               value={email}
               onChange={(event) => setEmail(event.target.value)}
+              onBlur={() => validateField('email')}
               error={errors.email}
               autoComplete="email"
             />
@@ -99,6 +128,7 @@ export function LoginPage() {
               type={showPassword ? 'text' : 'password'}
               value={password}
               onChange={(event) => setPassword(event.target.value)}
+              onBlur={() => validateField('password')}
               error={errors.password}
               autoComplete="current-password"
               endAdornment={

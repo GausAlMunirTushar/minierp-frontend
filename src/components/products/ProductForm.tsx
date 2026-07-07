@@ -73,6 +73,46 @@ export function ProductForm({
     return () => URL.revokeObjectURL(previewUrl)
   }, [form.image, previewUrl])
 
+  const validateField = (field: keyof ProductFormErrors) => {
+    setErrors((current) => {
+      const next = { ...current }
+
+      if (field === 'image') {
+        if (mode === 'create' && !form.image) {
+          next.image = t('imageRequired')
+        } else {
+          delete next.image
+        }
+      } else if (field === 'purchasePrice') {
+        if (Number(form.purchasePrice) <= 0) {
+          next.purchasePrice = t('positiveNumber')
+        } else {
+          delete next.purchasePrice
+        }
+      } else if (field === 'sellingPrice') {
+        if (Number(form.sellingPrice) <= 0) {
+          next.sellingPrice = t('positiveNumber')
+        } else {
+          delete next.sellingPrice
+        }
+      } else if (field === 'stockQuantity') {
+        if (Number(form.stockQuantity) < 0) {
+          next.stockQuantity = t('nonNegativeNumber')
+        } else {
+          delete next.stockQuantity
+        }
+      } else {
+        if (!String(form[field]).trim()) {
+          next[field] = t('requiredField')
+        } else {
+          delete next[field]
+        }
+      }
+
+      return next
+    })
+  }
+
   const validate = () => {
     const nextErrors: ProductFormErrors = {}
     const requiredFields: (keyof ProductPayload)[] = [
@@ -144,18 +184,21 @@ export function ProductForm({
           label={t('productName')}
           value={form.name}
           onChange={(event) => setForm({ ...form, name: event.target.value })}
+          onBlur={() => validateField('name')}
           error={errors.name}
         />
         <Input
           label={t('sku')}
           value={form.sku}
           onChange={(event) => setForm({ ...form, sku: event.target.value })}
+          onBlur={() => validateField('sku')}
           error={errors.sku}
         />
         <Select
           label={t('category')}
           value={form.category}
           onChange={(event) => setForm({ ...form, category: event.target.value })}
+          onBlur={() => validateField('category')}
           placeholder={t('selectCategory')}
           options={categoryOptions.map((name) => ({ value: name, label: name }))}
           error={errors.category}
@@ -166,6 +209,7 @@ export function ProductForm({
           min="0"
           value={form.purchasePrice}
           onChange={(event) => setForm({ ...form, purchasePrice: event.target.value })}
+          onBlur={() => validateField('purchasePrice')}
           error={errors.purchasePrice}
         />
         <Input
@@ -174,6 +218,7 @@ export function ProductForm({
           min="0"
           value={form.sellingPrice}
           onChange={(event) => setForm({ ...form, sellingPrice: event.target.value })}
+          onBlur={() => validateField('sellingPrice')}
           error={errors.sellingPrice}
         />
         <Input
@@ -182,6 +227,7 @@ export function ProductForm({
           min="0"
           value={form.stockQuantity}
           onChange={(event) => setForm({ ...form, stockQuantity: event.target.value })}
+          onBlur={() => validateField('stockQuantity')}
           error={errors.stockQuantity}
         />
       </div>
