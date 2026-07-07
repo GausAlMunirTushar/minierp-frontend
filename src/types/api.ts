@@ -32,6 +32,16 @@ export type ApiResponse<T> = {
   meta?: ApiMeta
 }
 
+export type PaginatedResponse<T> = ApiResponse<T[]> & {
+  meta: ApiMeta
+}
+
+export type ApiErrorResponse = {
+  success: false
+  message: string
+  errors?: unknown[]
+}
+
 export type LoginResponse = {
   accessToken: string
   expiresIn: string

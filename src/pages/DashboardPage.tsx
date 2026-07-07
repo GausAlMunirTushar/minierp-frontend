@@ -1,9 +1,12 @@
 import { AlertTriangle, Boxes, Receipt } from 'lucide-react'
 import type { ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
+import { Link } from 'react-router-dom'
 
+import { ASSET_BASE_URL, getApiErrorMessage } from '@/apis/configs'
+import { PageHeader } from '@/components/layout/PageHeader'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
-import { ASSET_BASE_URL } from '@/apis/configs'
+import { EmptyState, ErrorState, LoadingState } from '@/components/ui/state'
 import { useDashboardStats } from '@/hooks/useInventoryApi'
 
 function StatCard({ title, value, icon }: { title: string; value: number | string; icon: ReactNode }) {
@@ -22,20 +25,36 @@ function StatCard({ title, value, icon }: { title: string; value: number | strin
 
 export function DashboardPage() {
   const { t } = useTranslation()
-  const { data, isLoading } = useDashboardStats()
+  const { data, error, isError, isLoading, refetch } = useDashboardStats()
   const stats = data?.data
+
+  if (isLoading) {
+    return <LoadingState label={t('loadingDashboard')} />
+  }
+
+  if (isError) {
+    return (
+      <ErrorState
+        title={t('dashboardLoadError')}
+        description={getApiErrorMessage(error)}
+        onRetry={() => void refetch()}
+        retryLabel={t('retry')}
+      />
+    )
+  }
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-semibold text-slate-900">{t('dashboard')}</h1>
-        <p className="text-sm text-slate-500">Inventory and sales overview.</p>
-      </div>
+      <PageHeader title={t('dashboard')} description={t('inventoryOverview')} />
 
       <div className="grid gap-4 md:grid-cols-3">
-        <StatCard title={t('totalProducts')} value={isLoading ? '...' : (stats?.totalProducts ?? 0)} icon={<Boxes />} />
-        <StatCard title={t('totalSales')} value={isLoading ? '...' : (stats?.totalSales ?? 0)} icon={<Receipt />} />
-        <StatCard title={t('lowStock')} value={isLoading ? '...' : (stats?.lowStockProducts.length ?? 0)} icon={<AlertTriangle />} />
+        <StatCard title={t('totalProducts')} value={stats?.totalProducts ?? 0} icon={<Boxes />} />
+        <StatCard title={t('totalSales')} value={stats?.totalSales ?? 0} icon={<Receipt />} />
+        <StatCard
+          title={t('lowStock')}
+          value={stats?.lowStockProducts.length ?? 0}
+          icon={<AlertTriangle />}
+        />
       </div>
 
       <Card>
@@ -43,33 +62,47 @@ export function DashboardPage() {
           <h2 className="font-semibold text-slate-900">{t('lowStockProducts')}</h2>
         </CardHeader>
         <CardContent>
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b text-left text-slate-500">
-                  <th className="py-3">Product</th>
-                  <th>SKU</th>
-                  <th>Category</th>
-                  <th className="text-right">Stock</th>
-                </tr>
-              </thead>
-              <tbody>
-                {(stats?.lowStockProducts ?? []).map((product) => (
-                  <tr key={product._id} className="border-b last:border-0">
-                    <td className="py-3">
-                      <div className="flex items-center gap-3">
-                        {product.image && <img src={`${ASSET_BASE_URL}${product.image}`} alt={product.name} className="h-10 w-10 rounded object-cover" />}
-                        <span className="font-medium text-slate-900">{product.name}</span>
-                      </div>
-                    </td>
-                    <td>{product.sku}</td>
-                    <td>{product.category}</td>
-                    <td className="text-right font-semibold text-red-600">{product.stockQuantity}</td>
+          {stats?.lowStockProducts.length ? (
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b text-left text-slate-500">
+                    <th className="py-3">{t('product')}</th>
+                    <th>{t('sku')}</th>
+                    <th>{t('category')}</th>
+                    <th className="text-right">{t('stock')}</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody>
+                  {stats.lowStockProducts.map((product) => (
+                    <tr key={product._id} className="border-b last:border-0">
+                      <td className="py-3">
+                        <Link to={`/products?search=${product.sku}`} className="flex items-center gap-3">
+                          {product.image && (
+                            <img
+                              src={`${ASSET_BASE_URL}${product.image}`}
+                              alt={product.name}
+                              className="h-10 w-10 rounded object-cover"
+                            />
+                          )}
+                          <span className="font-medium text-slate-900 hover:text-cyan-700">
+                            {product.name}
+                          </span>
+                        </Link>
+                      </td>
+                      <td>{product.sku}</td>
+                      <td>{product.category}</td>
+                      <td className="text-right font-semibold text-red-600">
+                        {product.stockQuantity}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <EmptyState title={t('noLowStockProducts')} />
+          )}
         </CardContent>
       </Card>
     </div>

@@ -16,7 +16,8 @@ export function LanguageSwitcher() {
       <select
         value={i18n.language}
         onChange={(event) => changeLanguage(event.target.value)}
-        className="rounded-md border border-slate-200 bg-white px-2 py-1"
+        className="rounded-md border border-slate-200 bg-white px-2 py-1 outline-none focus:border-cyan-500"
+        aria-label={t('language')}
       >
         <option value="en">EN</option>
         <option value="bn">BN</option>

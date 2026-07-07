@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
-import { AxiosAPI } from '@/apis/configs'
+import { ApiClient } from '@/apis/configs'
 import { createSale } from '@/apis/endpoints/sale_apis'
 import { dashboardQueryKeys } from '@/apis/queries/dashboard_queries'
 import { productQueryKeys } from '@/apis/queries/product_queries'
@@ -13,7 +13,7 @@ export const useCreateSaleMutation = () => {
 
   return useMutation({
     mutationFn: (items: SaleItemInput[]) =>
-      AxiosAPI.post<ApiResponse<Sale>>(createSale, { items }).then((res) => res.data),
+      ApiClient.post<ApiResponse<Sale>>(createSale, { items }),
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: productQueryKeys.lists })
       void queryClient.invalidateQueries({ queryKey: saleQueryKeys.lists })

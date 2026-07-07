@@ -20,9 +20,30 @@ export default function App() {
         }
       >
         <Route index element={<Navigate to="/dashboard" replace />} />
-        <Route path="dashboard" element={<DashboardPage />} />
-        <Route path="products" element={<ProductsPage />} />
-        <Route path="sales" element={<SalesPage />} />
+        <Route
+          path="dashboard"
+          element={
+            <ProtectedRoute permissions={['dashboard.view']}>
+              <DashboardPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="products"
+          element={
+            <ProtectedRoute permissions={['products.view']}>
+              <ProductsPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="sales"
+          element={
+            <ProtectedRoute permissions={['sales.create']}>
+              <SalesPage />
+            </ProtectedRoute>
+          }
+        />
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>

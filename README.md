@@ -13,7 +13,7 @@ pnpm dev
 The backend API should run at `VITE_API_BASE_URL`, defaulting to:
 
 ```bash
-http://localhost:5000/api/v1
+http://localhost:4000/api/v1
 ```
 
 ## Default Backend Credentials

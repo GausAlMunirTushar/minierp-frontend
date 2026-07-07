@@ -1,13 +1,3 @@
-export type ApiMeta = {
-  page: number
-  limit: number
-  total: number
-  totalPages: number
-}
+import type { ApiErrorResponse, ApiMeta, ApiResponse, PaginatedResponse } from '@/types/api'
 
-export type ApiResponse<T> = {
-  success: boolean
-  message: string
-  data: T
-  meta?: ApiMeta
-}
+export type { ApiErrorResponse, ApiMeta, ApiResponse, PaginatedResponse }

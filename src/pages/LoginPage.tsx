@@ -1,33 +1,69 @@
-import { FormEvent, useState } from 'react'
+import { FormEvent, useMemo, useState } from 'react'
 import { Boxes } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 
+import { getApiErrorMessage } from '@/apis/configs'
 import { useLoginMutation } from '@/apis/mutations/auth_mutations'
+import { Alert } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { useAuth } from '@/hooks/useAuth'
 
+type LoginErrors = {
+  email?: string
+  password?: string
+}
+
 export function LoginPage() {
   const { t } = useTranslation()
   const navigate = useNavigate()
   const location = useLocation()
+  const [searchParams] = useSearchParams()
   const { login } = useAuth()
-  const [email, setEmail] = useState('admin@minierp.local')
-  const [password, setPassword] = useState('Admin123!')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [errors, setErrors] = useState<LoginErrors>({})
 
   const mutation = useLoginMutation()
+  const sessionExpired = searchParams.get('message') === 'session_expired'
+
+  const apiError = useMemo(
+    () => (mutation.error ? getApiErrorMessage(mutation.error) : ''),
+    [mutation.error],
+  )
+
+  const validate = () => {
+    const nextErrors: LoginErrors = {}
+
+    if (!email.trim()) {
+      nextErrors.email = t('requiredField')
+    } else if (!/^\S+@\S+\.\S+$/.test(email)) {
+      nextErrors.email = t('invalidEmail')
+    }
+
+    if (!password.trim()) {
+      nextErrors.password = t('requiredField')
+    }
+
+    setErrors(nextErrors)
+    return Object.keys(nextErrors).length === 0
+  }
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
+    if (!validate()) return
+
     mutation.mutate(
       { email, password },
       {
         onSuccess: (response) => {
-      login(response.data.accessToken, response.data.user)
-      const nextPath = (location.state as { from?: { pathname?: string } } | null)?.from?.pathname
-      navigate(nextPath || '/dashboard', { replace: true })
+          login(response.data.accessToken, response.data.user)
+          const statePath = (location.state as { from?: { pathname?: string } } | null)?.from
+            ?.pathname
+          const queryPath = searchParams.get('next')
+          navigate(queryPath || statePath || '/dashboard', { replace: true })
         },
       },
     )
@@ -45,22 +81,28 @@ export function LoginPage() {
             <p className="mt-1 text-sm text-slate-500">{t('loginSubtitle')}</p>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <Input label={t('email')} type="email" value={email} onChange={(event) => setEmail(event.target.value)} required />
+          {sessionExpired && <Alert variant="info">{t('sessionExpired')}</Alert>}
+          {mutation.isError && <Alert variant="error">{apiError || t('loginFailed')}</Alert>}
+
+          <form onSubmit={handleSubmit} className="space-y-4" noValidate>
+            <Input
+              label={t('email')}
+              type="email"
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+              error={errors.email}
+              autoComplete="email"
+            />
             <Input
               label={t('password')}
               type="password"
               value={password}
               onChange={(event) => setPassword(event.target.value)}
-              required
+              error={errors.password}
+              autoComplete="current-password"
             />
-            {mutation.isError && (
-              <p className="rounded-md bg-red-50 p-3 text-sm text-red-700">
-                {t('loginFailed')}
-              </p>
-            )}
             <Button className="w-full" type="submit" disabled={mutation.isPending}>
-              {mutation.isPending ? 'Signing in...' : t('signIn')}
+              {mutation.isPending ? t('signingIn') : t('signIn')}
             </Button>
           </form>
         </CardContent>

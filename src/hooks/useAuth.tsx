@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useMemo, useState } from 'react'
+import React, { createContext, useContext, useEffect, useMemo, useState } from 'react'
 
 import { authStore } from '@/lib/auth'
 import type { Permission, User } from '@/apis/types/auth_type'
@@ -15,6 +15,18 @@ const AuthContext = createContext<AuthContextValue | null>(null)
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(() => authStore.getUser())
+
+  useEffect(() => {
+    const syncAuth = () => setUser(authStore.getUser())
+
+    window.addEventListener('storage', syncAuth)
+    window.addEventListener(authStore.eventName, syncAuth)
+
+    return () => {
+      window.removeEventListener('storage', syncAuth)
+      window.removeEventListener(authStore.eventName, syncAuth)
+    }
+  }, [])
 
   const value = useMemo<AuthContextValue>(
     () => ({

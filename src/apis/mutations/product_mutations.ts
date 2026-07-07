@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
-import { AxiosAPI } from '@/apis/configs'
+import { ApiClient } from '@/apis/configs'
 import {
   createProduct,
   deleteProduct,
@@ -26,9 +26,7 @@ export const useCreateProductMutation = () => {
 
   return useMutation({
     mutationFn: (payload: ProductPayload) =>
-      AxiosAPI.post<ApiResponse<Product>>(createProduct, productToFormData(payload)).then(
-        (res) => res.data,
-      ),
+      ApiClient.form<ApiResponse<Product>>('post', createProduct, productToFormData(payload)),
     onSuccess: invalidate,
   })
 }
@@ -38,9 +36,7 @@ export const useUpdateProductMutation = () => {
 
   return useMutation({
     mutationFn: ({ id, payload }: { id: string; payload: ProductPayload }) =>
-      AxiosAPI.patch<ApiResponse<Product>>(updateProduct(id), productToFormData(payload)).then(
-        (res) => res.data,
-      ),
+      ApiClient.form<ApiResponse<Product>>('patch', updateProduct(id), productToFormData(payload)),
     onSuccess: invalidate,
   })
 }
@@ -50,7 +46,7 @@ export const useDeleteProductMutation = () => {
 
   return useMutation({
     mutationFn: (id: string) =>
-      AxiosAPI.delete<ApiResponse<Product>>(deleteProduct(id)).then((res) => res.data),
+      ApiClient.delete<ApiResponse<Product>>(deleteProduct(id)),
     onSuccess: invalidate,
   })
 }
