@@ -54,7 +54,7 @@ export function ModuleBar({ isOpen, onClose }: { isOpen: boolean; onClose: () =>
                   className="group relative flex w-full flex-col items-center gap-0.5 rounded-lg px-1 py-1.5"
                 >
                   {isActive && (
-                    <span className="absolute left-0 top-1/2 h-7 w-1 -translate-y-1/2 rounded-r-full bg-primary" />
+                    <span className="absolute left-1 top-1/2 h-7 w-1 -translate-y-1/2 rounded-full bg-primary" />
                   )}
                   <span
                     className={cn(

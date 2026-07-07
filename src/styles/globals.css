@@ -84,8 +84,8 @@
   /* Main theme colors */
   --primary: hsl(164, 81%, 35%); /* Brand teal #11A47C */
   --primary-foreground: hsl(0, 0%, 100%);
-  --secondary: hsl(164, 60%, 95%); /* Soft teal background */
-  --secondary-foreground: hsl(164, 81%, 28%);
+  --secondary: hsl(164, 55%, 94%); /* Soft teal background */
+  --secondary-foreground: hsl(164, 80%, 26%);
   --destructive: hsl(0, 84%, 60%);
   --destructive-foreground: hsl(0, 0%, 100%);
   --success: hsl(142, 76%, 36%); /* Green */
@@ -107,8 +107,8 @@
   --border: hsl(220, 13%, 91%);
   --input: hsl(210, 3%, 86%);
   --ring: hsl(164, 81%, 35%);
-  --accent: hsl(222, 47%, 56%); /* slate-500 */
-  --accent-foreground: hsl(210, 40%, 98%); /* slate-50 */
+  --accent: hsl(164, 55%, 93%); /* Primary-tinted hover surface */
+  --accent-foreground: hsl(164, 80%, 26%);
   --muted: hsl(220, 16%, 92%); /* Muted gray-blue */
   --muted-foreground: hsl(221, 39%, 30%);
 
@@ -117,8 +117,8 @@
   --sidebar-foreground: hsl(222, 47%, 11%);
   --sidebar-primary: hsl(164, 81%, 35%);
   --sidebar-primary-foreground: hsl(0, 0%, 100%);
-  --sidebar-accent: hsl(164, 60%, 95%);
-  --sidebar-accent-foreground: hsl(164, 81%, 30%);
+  --sidebar-accent: hsl(164, 55%, 93%);
+  --sidebar-accent-foreground: hsl(164, 80%, 26%);
   --sidebar-border: hsl(220, 13%, 91%);
   --sidebar-ring: hsl(164, 81%, 35%);
   --modularbar: hsl(0, 0%, 100%);
@@ -140,8 +140,8 @@
   /* Main theme colors */
   --primary: hsl(164, 70%, 45%); /* Bright teal for dark bg */
   --primary-foreground: hsl(0, 0%, 100%);
-  --secondary: hsl(219, 34%, 19%); /* Muted navy surface */
-  --secondary-foreground: hsl(164, 70%, 60%);
+  --secondary: hsl(180, 18%, 20%); /* Muted teal-navy surface */
+  --secondary-foreground: hsl(164, 70%, 62%);
   --destructive: hsl(3, 93%, 63%); /* GitHub danger */
   --destructive-foreground: hsl(0, 0%, 100%);
   --success: hsl(128, 49%, 49%); /* GitHub success */
@@ -163,8 +163,8 @@
   --border: hsl(219, 32%, 22%);
   --input: hsl(219, 32%, 22%);
   --ring: hsl(164, 70%, 45%);
-  --accent: hsl(219, 32%, 22%);
-  --accent-foreground: hsl(208, 35%, 93%);
+  --accent: hsl(180, 20%, 22%); /* Primary-tinted hover surface */
+  --accent-foreground: hsl(164, 70%, 65%);
   --muted: hsl(219, 34%, 19%);
   --muted-foreground: hsl(212, 9%, 58%);
 
@@ -173,8 +173,8 @@
   --sidebar-foreground: hsl(208, 35%, 93%);
   --sidebar-primary: hsl(164, 70%, 45%);
   --sidebar-primary-foreground: hsl(0, 0%, 100%);
-  --sidebar-accent: hsl(219, 32%, 22%);
-  --sidebar-accent-foreground: hsl(164, 70%, 60%);
+  --sidebar-accent: hsl(180, 20%, 22%);
+  --sidebar-accent-foreground: hsl(164, 70%, 65%);
   --sidebar-border: hsl(219, 32%, 22%);
   --sidebar-ring: hsl(164, 70%, 45%);
   --modularbar: hsl(219, 34%, 13%);

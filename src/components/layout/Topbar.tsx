@@ -67,8 +67,8 @@ export function Topbar({ onMenuClick }: { onMenuClick: () => void }) {
       </div>
 
       <div className="flex items-center gap-2 lg:gap-3">
-        <ThemeToggle />
         <LanguageSwitcher />
+        <ThemeToggle />
 
         <button
           type="button"
