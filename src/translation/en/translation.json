@@ -124,5 +124,7 @@
   "selectCategory": "Select category",
   "roles": "Roles",
   "rolesDescription": "Assign which permissions each role has.",
-  "savePermissions": "Save"
+  "savePermissions": "Save",
+  "gridView": "Grid view",
+  "listView": "List view"
 }

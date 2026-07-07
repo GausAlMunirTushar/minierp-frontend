@@ -124,5 +124,7 @@
   "selectCategory": "ক্যাটাগরি নির্বাচন করুন",
   "roles": "ভূমিকা",
   "rolesDescription": "প্রতিটি ভূমিকার জন্য অনুমতি নির্ধারণ করুন।",
-  "savePermissions": "সংরক্ষণ করুন"
+  "savePermissions": "সংরক্ষণ করুন",
+  "gridView": "গ্রিড ভিউ",
+  "listView": "তালিকা ভিউ"
 }
