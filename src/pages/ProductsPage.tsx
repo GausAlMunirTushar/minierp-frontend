@@ -1,39 +1,26 @@
 import { useEffect, useMemo, useState } from 'react'
-import type { FormEvent } from 'react'
 import type { ColumnDef } from '@tanstack/react-table'
-import { Edit, Package, Plus, Search, Trash2, X } from 'lucide-react'
+import { Edit, Package, Plus, Search, Trash2 } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { useSearchParams } from 'react-router-dom'
 import { toast } from 'sonner'
 
 import { ASSET_BASE_URL, getApiErrorMessage } from '@/apis/configs'
-import type { Product, ProductPayload } from '@/apis/types/product_type'
+import type { Product } from '@/apis/types/product_type'
 import { PageHeader } from '@/components/layout/PageHeader'
+import { ProductForm } from '@/components/products/ProductForm'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader } from '@/components/ui/card'
+import { Card, CardContent } from '@/components/ui/card'
 import { ConfirmDialog } from '@/components/ui/confirm-dialog'
 import { DataTable } from '@/components/ui/data-table/data-table'
 import { DataTableColumnHeader } from '@/components/ui/data-table/data-table-column-header'
-import { FileUpload } from '@/components/ui/file-upload'
-import { Input } from '@/components/ui/input'
+import { Dialog } from '@/components/ui/dialog'
 import { EmptyState, ErrorState } from '@/components/ui/state'
 import { UI_CONSTANTS } from '@/configs/constants'
 import { useAuth } from '@/hooks/useAuth'
 import { useDebouncedValue } from '@/hooks/useDebouncedValue'
-import { useCreateProduct, useDeleteProduct, useProducts, useUpdateProduct } from '@/hooks/useInventoryApi'
+import { useDeleteProduct, useProducts } from '@/hooks/useInventoryApi'
 import { formatCurrency } from '@/utils/currency'
-
-type ProductFormErrors = Partial<Record<keyof ProductPayload, string>>
-
-const emptyProduct: ProductPayload = {
-  name: '',
-  sku: '',
-  category: '',
-  purchasePrice: '',
-  sellingPrice: '',
-  stockQuantity: '',
-  image: null,
-}
 
 const getParamNumber = (value: string | null, fallback: number) => {
   const parsed = Number(value)
@@ -44,9 +31,8 @@ export function ProductsPage() {
   const { t } = useTranslation()
   const { can } = useAuth()
   const [searchParams, setSearchParams] = useSearchParams()
-  const [editing, setEditing] = useState<Product | null>(null)
-  const [form, setForm] = useState<ProductPayload>(emptyProduct)
-  const [errors, setErrors] = useState<ProductFormErrors>({})
+  const [isFormOpen, setIsFormOpen] = useState(false)
+  const [editingProduct, setEditingProduct] = useState<Product | null>(null)
   const [productToDelete, setProductToDelete] = useState<Product | null>(null)
   const [searchInput, setSearchInput] = useState(searchParams.get('search') ?? '')
 
@@ -77,8 +63,6 @@ export function ProductsPage() {
     category: category || undefined,
     sort,
   })
-  const createMutation = useCreateProduct()
-  const updateMutation = useUpdateProduct()
   const deleteMutation = useDeleteProduct()
 
   const products = productsQuery.data?.data ?? []
@@ -86,18 +70,6 @@ export function ProductsPage() {
   const canManage = can('products.create')
   const canUpdate = can('products.update')
   const canDelete = can('products.delete')
-  const isSaving = createMutation.isPending || updateMutation.isPending
-
-  const previewUrl = useMemo(() => {
-    if (form.image) return URL.createObjectURL(form.image)
-    if (editing?.image) return `${ASSET_BASE_URL}${editing.image}`
-    return ''
-  }, [editing?.image, form.image])
-
-  useEffect(() => {
-    if (!form.image || !previewUrl.startsWith('blob:')) return
-    return () => URL.revokeObjectURL(previewUrl)
-  }, [form.image, previewUrl])
 
   const updateParam = (key: string, value: string) => {
     const nextParams = new URLSearchParams(searchParams)
@@ -123,88 +95,19 @@ export function ProductsPage() {
     setSearchParams(nextParams)
   }
 
-  const resetForm = () => {
-    setEditing(null)
-    setForm(emptyProduct)
-    setErrors({})
+  const openCreateForm = () => {
+    setEditingProduct(null)
+    setIsFormOpen(true)
   }
 
-  const startEdit = (product: Product) => {
-    setEditing(product)
-    setForm({
-      name: product.name,
-      sku: product.sku,
-      category: product.category,
-      purchasePrice: String(product.purchasePrice),
-      sellingPrice: String(product.sellingPrice),
-      stockQuantity: String(product.stockQuantity),
-      image: null,
-    })
-    setErrors({})
+  const openEditForm = (product: Product) => {
+    setEditingProduct(product)
+    setIsFormOpen(true)
   }
 
-  const validate = () => {
-    const nextErrors: ProductFormErrors = {}
-    const requiredFields: (keyof ProductPayload)[] = [
-      'name',
-      'sku',
-      'category',
-      'purchasePrice',
-      'sellingPrice',
-      'stockQuantity',
-    ]
-
-    requiredFields.forEach((field) => {
-      if (!String(form[field]).trim()) {
-        nextErrors[field] = t('requiredField')
-      }
-    })
-
-    if (!editing && !form.image) {
-      nextErrors.image = t('imageRequired')
-    }
-
-    if (Number(form.purchasePrice) <= 0) {
-      nextErrors.purchasePrice = t('positiveNumber')
-    }
-
-    if (Number(form.sellingPrice) <= 0) {
-      nextErrors.sellingPrice = t('positiveNumber')
-    }
-
-    if (Number(form.stockQuantity) < 0) {
-      nextErrors.stockQuantity = t('nonNegativeNumber')
-    }
-
-    setErrors(nextErrors)
-    return Object.keys(nextErrors).length === 0
-  }
-
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-    if (!validate()) return
-
-    if (editing) {
-      updateMutation.mutate(
-        { id: editing._id, payload: form },
-        {
-          onSuccess: () => {
-            resetForm()
-            toast.success(t('updatedSuccessfully'))
-          },
-          onError: (error) => toast.error(getApiErrorMessage(error)),
-        },
-      )
-      return
-    }
-
-    createMutation.mutate(form, {
-      onSuccess: () => {
-        resetForm()
-        toast.success(t('createdSuccessfully'))
-      },
-      onError: (error) => toast.error(getApiErrorMessage(error)),
-    })
+  const closeForm = () => {
+    setIsFormOpen(false)
+    setEditingProduct(null)
   }
 
   const confirmDelete = () => {
@@ -274,7 +177,7 @@ export function ProductsPage() {
           return (
             <div className="flex justify-end gap-2">
               {canUpdate && (
-                <Button variant="outline" type="button" onClick={() => startEdit(product)}>
+                <Button variant="outline" type="button" onClick={() => openEditForm(product)}>
                   <Edit size={16} />
                 </Button>
               )}
@@ -293,7 +196,18 @@ export function ProductsPage() {
 
   return (
     <div className="space-y-6">
-      <PageHeader title={t('products')} description={t('productDescription')} />
+      <PageHeader
+        title={t('products')}
+        description={t('productDescription')}
+        actions={
+          canManage && (
+            <Button type="button" onClick={openCreateForm}>
+              <Plus size={16} />
+              {t('addProduct')}
+            </Button>
+          )
+        }
+      />
 
       <div className="grid gap-3 lg:grid-cols-[1fr_220px_220px]">
         <label className="relative block">
@@ -323,85 +237,6 @@ export function ProductsPage() {
           <option value="stockQuantity">{t('stockLow')}</option>
         </select>
       </div>
-
-      {canManage && (
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between">
-            <h2 className="font-semibold text-card-foreground">
-              {editing ? t('editProduct') : t('addProduct')}
-            </h2>
-            {editing && (
-              <Button variant="ghost" type="button" onClick={resetForm}>
-                <X size={16} />
-                {t('cancel')}
-              </Button>
-            )}
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-4" noValidate>
-              <div className="grid gap-4 md:grid-cols-3">
-                <Input
-                  label={t('productName')}
-                  value={form.name}
-                  onChange={(event) => setForm({ ...form, name: event.target.value })}
-                  error={errors.name}
-                />
-                <Input
-                  label={t('sku')}
-                  value={form.sku}
-                  onChange={(event) => setForm({ ...form, sku: event.target.value })}
-                  error={errors.sku}
-                />
-                <Input
-                  label={t('category')}
-                  value={form.category}
-                  onChange={(event) => setForm({ ...form, category: event.target.value })}
-                  error={errors.category}
-                />
-                <Input
-                  label={t('purchasePrice')}
-                  type="number"
-                  min="0"
-                  value={form.purchasePrice}
-                  onChange={(event) => setForm({ ...form, purchasePrice: event.target.value })}
-                  error={errors.purchasePrice}
-                />
-                <Input
-                  label={t('sellingPrice')}
-                  type="number"
-                  min="0"
-                  value={form.sellingPrice}
-                  onChange={(event) => setForm({ ...form, sellingPrice: event.target.value })}
-                  error={errors.sellingPrice}
-                />
-                <Input
-                  label={t('stockQuantity')}
-                  type="number"
-                  min="0"
-                  value={form.stockQuantity}
-                  onChange={(event) => setForm({ ...form, stockQuantity: event.target.value })}
-                  error={errors.stockQuantity}
-                />
-              </div>
-              <div className="flex flex-col gap-4 md:flex-row md:items-end">
-                <div className="flex-1">
-                  <FileUpload
-                    label={t('productImage')}
-                    required={!editing}
-                    previewUrl={previewUrl}
-                    error={errors.image}
-                    onChange={(image) => setForm({ ...form, image })}
-                  />
-                </div>
-                <Button type="submit" disabled={isSaving}>
-                  <Plus size={16} />
-                  {isSaving ? t('saving') : editing ? t('update') : t('create')}
-                </Button>
-              </div>
-            </form>
-          </CardContent>
-        </Card>
-      )}
 
       <Card>
         <CardContent className="p-0">
@@ -435,6 +270,21 @@ export function ProductsPage() {
           )}
         </CardContent>
       </Card>
+
+      <Dialog
+        open={isFormOpen}
+        onClose={closeForm}
+        title={editingProduct ? t('editProduct') : t('addProduct')}
+        closeLabel={t('close')}
+      >
+        <ProductForm
+          key={editingProduct?._id ?? 'create'}
+          mode={editingProduct ? 'edit' : 'create'}
+          product={editingProduct}
+          onSuccess={closeForm}
+          onCancel={closeForm}
+        />
+      </Dialog>
 
       <ConfirmDialog
         open={Boolean(productToDelete)}

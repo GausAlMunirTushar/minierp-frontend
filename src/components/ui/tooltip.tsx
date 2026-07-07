@@ -21,12 +21,12 @@ export function Tooltip({
   side?: TooltipSide
 }) {
   return (
-    <div className="group relative inline-flex w-full">
+    <div className="group/tooltip relative inline-flex w-full">
       {children}
       <span
         role="tooltip"
         className={cn(
-          'pointer-events-none absolute z-[100] whitespace-nowrap rounded-md border border-border bg-popover px-2 py-1 text-xs text-popover-foreground opacity-0 shadow-md transition-opacity duration-150 group-hover:opacity-100',
+          'pointer-events-none absolute z-[100] whitespace-nowrap rounded-md border border-border bg-popover px-2 py-1 text-xs text-popover-foreground opacity-0 shadow-md transition-opacity duration-150 group-hover/tooltip:opacity-100',
           sideClasses[side],
         )}
       >

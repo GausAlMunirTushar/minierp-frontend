@@ -1,0 +1,195 @@
+import { useEffect, useMemo, useState } from 'react'
+import type { FormEvent } from 'react'
+import { useTranslation } from 'react-i18next'
+import { toast } from 'sonner'
+
+import { ASSET_BASE_URL, getApiErrorMessage } from '@/apis/configs'
+import type { Product, ProductPayload } from '@/apis/types/product_type'
+import { Button } from '@/components/ui/button'
+import { FileUpload } from '@/components/ui/file-upload'
+import { Input } from '@/components/ui/input'
+import { useCreateProduct, useUpdateProduct } from '@/hooks/useInventoryApi'
+
+type ProductFormErrors = Partial<Record<keyof ProductPayload, string>>
+
+const emptyProduct: ProductPayload = {
+  name: '',
+  sku: '',
+  category: '',
+  purchasePrice: '',
+  sellingPrice: '',
+  stockQuantity: '',
+  image: null,
+}
+
+export function ProductForm({
+  mode,
+  product,
+  onSuccess,
+  onCancel,
+}: {
+  mode: 'create' | 'edit'
+  product?: Product | null
+  onSuccess: () => void
+  onCancel: () => void
+}) {
+  const { t } = useTranslation()
+  const [form, setForm] = useState<ProductPayload>(() =>
+    mode === 'edit' && product
+      ? {
+          name: product.name,
+          sku: product.sku,
+          category: product.category,
+          purchasePrice: String(product.purchasePrice),
+          sellingPrice: String(product.sellingPrice),
+          stockQuantity: String(product.stockQuantity),
+          image: null,
+        }
+      : emptyProduct,
+  )
+  const [errors, setErrors] = useState<ProductFormErrors>({})
+  const createMutation = useCreateProduct()
+  const updateMutation = useUpdateProduct()
+  const isSaving = createMutation.isPending || updateMutation.isPending
+
+  const previewUrl = useMemo(() => {
+    if (form.image) return URL.createObjectURL(form.image)
+    if (mode === 'edit' && product?.image) return `${ASSET_BASE_URL}${product.image}`
+    return ''
+  }, [form.image, mode, product?.image])
+
+  useEffect(() => {
+    if (!form.image || !previewUrl.startsWith('blob:')) return
+    return () => URL.revokeObjectURL(previewUrl)
+  }, [form.image, previewUrl])
+
+  const validate = () => {
+    const nextErrors: ProductFormErrors = {}
+    const requiredFields: (keyof ProductPayload)[] = [
+      'name',
+      'sku',
+      'category',
+      'purchasePrice',
+      'sellingPrice',
+      'stockQuantity',
+    ]
+
+    requiredFields.forEach((field) => {
+      if (!String(form[field]).trim()) {
+        nextErrors[field] = t('requiredField')
+      }
+    })
+
+    if (mode === 'create' && !form.image) {
+      nextErrors.image = t('imageRequired')
+    }
+
+    if (Number(form.purchasePrice) <= 0) {
+      nextErrors.purchasePrice = t('positiveNumber')
+    }
+
+    if (Number(form.sellingPrice) <= 0) {
+      nextErrors.sellingPrice = t('positiveNumber')
+    }
+
+    if (Number(form.stockQuantity) < 0) {
+      nextErrors.stockQuantity = t('nonNegativeNumber')
+    }
+
+    setErrors(nextErrors)
+    return Object.keys(nextErrors).length === 0
+  }
+
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    if (!validate()) return
+
+    if (mode === 'edit' && product) {
+      updateMutation.mutate(
+        { id: product._id, payload: form },
+        {
+          onSuccess: () => {
+            toast.success(t('updatedSuccessfully'))
+            onSuccess()
+          },
+          onError: (error) => toast.error(getApiErrorMessage(error)),
+        },
+      )
+      return
+    }
+
+    createMutation.mutate(form, {
+      onSuccess: () => {
+        toast.success(t('createdSuccessfully'))
+        onSuccess()
+      },
+      onError: (error) => toast.error(getApiErrorMessage(error)),
+    })
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-4" noValidate>
+      <div className="grid gap-4 md:grid-cols-3">
+        <Input
+          label={t('productName')}
+          value={form.name}
+          onChange={(event) => setForm({ ...form, name: event.target.value })}
+          error={errors.name}
+        />
+        <Input
+          label={t('sku')}
+          value={form.sku}
+          onChange={(event) => setForm({ ...form, sku: event.target.value })}
+          error={errors.sku}
+        />
+        <Input
+          label={t('category')}
+          value={form.category}
+          onChange={(event) => setForm({ ...form, category: event.target.value })}
+          error={errors.category}
+        />
+        <Input
+          label={t('purchasePrice')}
+          type="number"
+          min="0"
+          value={form.purchasePrice}
+          onChange={(event) => setForm({ ...form, purchasePrice: event.target.value })}
+          error={errors.purchasePrice}
+        />
+        <Input
+          label={t('sellingPrice')}
+          type="number"
+          min="0"
+          value={form.sellingPrice}
+          onChange={(event) => setForm({ ...form, sellingPrice: event.target.value })}
+          error={errors.sellingPrice}
+        />
+        <Input
+          label={t('stockQuantity')}
+          type="number"
+          min="0"
+          value={form.stockQuantity}
+          onChange={(event) => setForm({ ...form, stockQuantity: event.target.value })}
+          error={errors.stockQuantity}
+        />
+      </div>
+
+      <FileUpload
+        label={t('productImage')}
+        required={mode === 'create'}
+        previewUrl={previewUrl}
+        error={errors.image}
+        onChange={(image) => setForm({ ...form, image })}
+      />
+
+      <div className="flex justify-end gap-2 border-t border-border pt-4">
+        <Button type="button" variant="outline" onClick={onCancel} disabled={isSaving}>
+          {t('cancel')}
+        </Button>
+        <Button type="submit" disabled={isSaving}>
+          {isSaving ? t('saving') : mode === 'edit' ? t('update') : t('create')}
+        </Button>
+      </div>
+    </form>
+  )
+}

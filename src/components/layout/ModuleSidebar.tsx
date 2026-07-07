@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Search } from 'lucide-react'
+import { ChevronLeft, Search } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { NavLink } from 'react-router-dom'
 
@@ -12,10 +12,14 @@ export function ModuleSidebar({
   config,
   isOpen,
   onNavigate,
+  collapsed,
+  onToggleCollapse,
 }: {
   config: ModuleConfig
   isOpen: boolean
   onNavigate: () => void
+  collapsed: boolean
+  onToggleCollapse: () => void
 }) {
   const { t } = useTranslation()
   const { can } = useAuth()
@@ -28,12 +32,23 @@ export function ModuleSidebar({
   return (
     <aside
       className={cn(
-        'fixed inset-y-0 left-20 z-40 flex w-64 flex-col border-r border-sidebar-border bg-sidebar transition-transform duration-200 lg:translate-x-0',
+        'fixed inset-y-0 left-20 z-40 flex w-64 flex-col border-r border-sidebar-border bg-sidebar transition-transform duration-200',
         // -translate-x-full only shifts by this element's own width (256px), which isn't enough
         // to clear its left-20 (80px) static offset too — use an explicit distance instead.
         isOpen ? 'translate-x-0' : '-translate-x-[336px]',
+        collapsed ? 'lg:-translate-x-[336px]' : 'lg:translate-x-0',
       )}
     >
+      <button
+        type="button"
+        onClick={onToggleCollapse}
+        aria-label={t('collapseSidebar')}
+        title={t('collapseSidebar')}
+        className="absolute -right-3 top-8 z-10 hidden h-6 w-6 -translate-y-1/2 items-center justify-center rounded-full border border-sidebar-border bg-sidebar text-sidebar-foreground/70 shadow-sm transition-colors hover:text-primary lg:flex"
+      >
+        <ChevronLeft size={14} />
+      </button>
+
       <div className="flex h-16 shrink-0 items-center border-b border-sidebar-border px-4 lg:px-6">
         <h2 className="text-sm font-semibold text-sidebar-foreground">{t(config.module.label)}</h2>
       </div>
