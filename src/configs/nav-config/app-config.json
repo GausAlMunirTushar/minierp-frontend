@@ -23,16 +23,28 @@
       "contain_menus": ["dashboard"]
     },
     {
-      "id": "inventory",
-      "label": "inventory",
-      "icon": "Boxes",
+      "id": "products",
+      "label": "products",
+      "icon": "Package",
       "path": "/products",
       "order": 2,
       "enabled": true,
-      "required_permissions": ["products.view", "sales.create"],
-      "config_file": "inventory-config.json",
-      "has_sidebar": true,
-      "contain_menus": ["products", "sales"]
+      "required_permissions": ["products.view"],
+      "config_file": "products-config.json",
+      "has_sidebar": false,
+      "contain_menus": ["products"]
+    },
+    {
+      "id": "sales",
+      "label": "sales",
+      "icon": "Receipt",
+      "path": "/sales",
+      "order": 3,
+      "enabled": true,
+      "required_permissions": ["sales.create"],
+      "config_file": "sales-config.json",
+      "has_sidebar": false,
+      "contain_menus": ["sales"]
     }
   ]
 }

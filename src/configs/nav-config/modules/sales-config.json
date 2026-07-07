@@ -1,0 +1,17 @@
+{
+  "module": {
+    "id": "sales",
+    "label": "sales",
+    "icon": "Receipt",
+    "base_path": "/sales",
+    "menus": [
+      {
+        "id": "sales",
+        "label": "sales",
+        "icon": "Receipt",
+        "path": "/sales",
+        "required_permissions": ["sales.create"]
+      }
+    ]
+  }
+}

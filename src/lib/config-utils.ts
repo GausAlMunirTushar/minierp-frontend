@@ -1,12 +1,14 @@
 import type { Permission } from '@/apis/types/auth_type'
 import appConfigJson from '@/configs/nav-config/app-config.json'
-import inventoryConfigJson from '@/configs/nav-config/modules/inventory-config.json'
 import mainConfigJson from '@/configs/nav-config/modules/main-config.json'
+import productsConfigJson from '@/configs/nav-config/modules/products-config.json'
+import salesConfigJson from '@/configs/nav-config/modules/sales-config.json'
 import type { AppConfig, Module, ModuleConfig } from '@/types/config.types'
 
 const moduleConfigsByFile: Record<string, ModuleConfig> = {
   'main-config.json': mainConfigJson as unknown as ModuleConfig,
-  'inventory-config.json': inventoryConfigJson as unknown as ModuleConfig,
+  'products-config.json': productsConfigJson as unknown as ModuleConfig,
+  'sales-config.json': salesConfigJson as unknown as ModuleConfig,
 }
 
 export const getAppConfig = (): AppConfig => appConfigJson as unknown as AppConfig

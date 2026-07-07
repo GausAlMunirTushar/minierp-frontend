@@ -1,8 +1,8 @@
 {
   "module": {
-    "id": "inventory",
-    "label": "inventory",
-    "icon": "Boxes",
+    "id": "products",
+    "label": "products",
+    "icon": "Package",
     "base_path": "/products",
     "menus": [
       {
@@ -11,13 +11,6 @@
         "icon": "Package",
         "path": "/products",
         "required_permissions": ["products.view"]
-      },
-      {
-        "id": "sales",
-        "label": "sales",
-        "icon": "Receipt",
-        "path": "/sales",
-        "required_permissions": ["sales.create"]
       }
     ]
   }

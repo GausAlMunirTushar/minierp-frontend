@@ -1,16 +1,15 @@
 import { useMemo } from 'react'
-import { Bell, ChevronDown, LogOut, Menu, User } from 'lucide-react'
+import { Bell, ChevronDown, LogOut, User } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { useLocation, useNavigate } from 'react-router-dom'
 
 import { LanguageSwitcher } from '@/components/layout/LanguageSwitcher'
 import { ThemeToggle } from '@/components/layout/ThemeToggle'
-import { Button } from '@/components/ui/button'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { useAuth } from '@/hooks/useAuth'
 import { getActiveModule, getModuleConfig } from '@/lib/config-utils'
 
-export function Topbar({ onMenuClick }: { onMenuClick: () => void }) {
+export function Topbar() {
   const { t } = useTranslation()
   const { user, logout } = useAuth()
   const navigate = useNavigate()
