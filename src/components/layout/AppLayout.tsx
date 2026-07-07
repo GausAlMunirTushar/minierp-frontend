@@ -45,7 +45,7 @@ export function AppLayout() {
         )}
       >
         <Topbar />
-        <main className="flex-1 px-4 py-4 pb-24 lg:py-6">
+        <main className="flex-1 px-4 py-4">
           <Outlet />
         </main>
       </div>

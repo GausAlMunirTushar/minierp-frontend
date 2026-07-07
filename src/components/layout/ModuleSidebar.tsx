@@ -77,6 +77,7 @@ export function ModuleSidebar({
             <NavLink
               key={menu.id}
               to={menu.path}
+              end
               onClick={onNavigate}
               className={({ isActive }) =>
                 cn(
