@@ -2,6 +2,8 @@
 
 React, React Router, TypeScript, Tailwind CSS, TanStack Query, and i18n frontend for the Mini ERP Inventory & Sales Management System.
 
+*   **Production Deployment:** [https://minierp.gausalmunir.site](https://minierp.gausalmunir.site)
+
 ## Tech Stack
 
 - React 19, TypeScript 5, Vite 8
