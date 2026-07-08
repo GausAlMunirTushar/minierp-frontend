@@ -97,7 +97,8 @@ export function SalesPage() {
         title={t('createSale')}
         description={t('salesDescription')}
         closeLabel={t('close')}
-        className="max-w-3xl"
+        className="max-w-5xl"
+        showMaximize
       >
         <SaleForm onSuccess={closeForm} onCancel={closeForm} />
       </Dialog>

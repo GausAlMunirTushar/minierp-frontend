@@ -9,6 +9,7 @@ import type { SaleItemInput } from '@/apis/types/sale_type'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Select } from '@/components/ui/select'
+import type { Product } from '@/apis/types/product_type'
 import { ErrorState } from '@/components/ui/state'
 import { FormRowSkeleton } from '@/components/ui/skeletons'
 import { useCreateSale, useProducts } from '@/hooks/useInventoryApi'
@@ -24,10 +25,13 @@ export function SaleForm({ onSuccess, onCancel }: { onSuccess: () => void; onCan
   const [errors, setErrors] = useState<SaleErrors>({})
   const productsQuery = useProducts({ page: 1, limit: 100, sort: 'name' })
   const createSale = useCreateSale()
-  const products = useMemo(() => productsQuery.data?.data ?? [], [productsQuery.data?.data])
+  const products = useMemo<Product[]>(
+    () => (productsQuery.data?.data as Product[]) ?? [],
+    [productsQuery.data?.data],
+  )
 
   const productById = useMemo(
-    () => new Map(products.map((product) => [product._id, product])),
+    () => new Map<string, Product>(products.map((product) => [product._id, product])),
     [products],
   )
   const selectedProducts = useMemo(() => items.map((item) => item.product).filter(Boolean), [items])
@@ -54,41 +58,6 @@ export function SaleForm({ onSuccess, onCancel }: { onSuccess: () => void; onCan
     setItems((current) =>
       current.map((item, itemIndex) => (itemIndex === index ? { ...item, ...patch } : item)),
     )
-  }
-
-  const validateField = (index: number, field: keyof SaleItemInput) => {
-    setErrors((current) => {
-      const next = { ...current }
-      const itemErrors = { ...(next[index] ?? {}) } as Partial<Record<keyof SaleItemInput, string>>
-      const item = items[index]
-      const product = productById.get(item.product)
-
-      if (field === 'product') {
-        if (!item.product) {
-          itemErrors.product = t('requiredField')
-        } else {
-          delete itemErrors.product
-        }
-      }
-
-      if (field === 'quantity') {
-        if (!item.quantity || item.quantity <= 0) {
-          itemErrors.quantity = t('positiveNumber')
-        } else if (product && item.quantity > product.stockQuantity) {
-          itemErrors.quantity = t('quantityExceedsStock')
-        } else {
-          delete itemErrors.quantity
-        }
-      }
-
-      if (Object.keys(itemErrors).length > 0) {
-        next[index] = itemErrors
-      } else {
-        delete next[index]
-      }
-
-      return next
-    })
   }
 
   const validate = () => {
@@ -160,31 +129,25 @@ export function SaleForm({ onSuccess, onCancel }: { onSuccess: () => void; onCan
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4" noValidate>
-      {items.map((item, index) => {
-        const product = productById.get(item.product)
-        const lineTotal = (product?.sellingPrice ?? 0) * item.quantity
+      <div className="max-h-[50vh] overflow-y-auto space-y-4 pr-2">
+        {items.map((item, index) => {
+          const product = productById.get(item.product)
+          const lineTotal = (product?.sellingPrice ?? 0) * item.quantity
 
-        return (
-          <div
-            key={index}
-            className="grid gap-3 rounded-md border border-border p-3 md:grid-cols-[1fr_150px_160px_auto]"
-          >
-            <label className="space-y-1.5 text-sm font-medium text-foreground">
-              <span>
-                {t('product')}
-                <span className="text-destructive ml-0.5" aria-hidden="true">
-                  *
-                </span>
-              </span>
-              <select
+          return (
+            <div
+              key={index}
+              className="grid gap-3 rounded-md border border-border p-3 md:grid-cols-[1fr_150px_160px_auto]"
+            >
+              <Select
+                label={t('product')}
                 value={item.product}
                 onChange={(event) => updateItem(index, { product: event.target.value })}
-                className="w-full rounded-md border border-input bg-background px-3 py-2 text-foreground outline-none focus:border-ring disabled:opacity-60 disabled:cursor-not-allowed disabled:bg-muted"
+                placeholder={t('selectProduct')}
                 disabled={createSale.isPending}
                 required
-                aria-invalid={errors[index]?.product ? 'true' : 'false'}
+                error={errors[index]?.product}
               >
-                <option value="">{t('selectProduct')}</option>
                 {products.map((productItem) => {
                   const selectedElsewhere =
                     selectedProducts.includes(productItem._id) && productItem._id !== item.product
@@ -201,41 +164,38 @@ export function SaleForm({ onSuccess, onCancel }: { onSuccess: () => void; onCan
                     </option>
                   )
                 })}
-              </select>
-              {errors[index]?.product && (
-                <span className="text-xs text-destructive">{errors[index]?.product}</span>
-              )}
-            </label>
-            <Input
-              label={t('quantity')}
-              type="number"
-              min="1"
-              max={product?.stockQuantity}
-              value={item.quantity}
-              onChange={(event) => updateItem(index, { quantity: Number(event.target.value) })}
-              error={errors[index]?.quantity}
-              required
-              disabled={createSale.isPending}
-            />
-            <div className="space-y-1.5 text-sm font-medium text-foreground">
-              <span>{t('lineTotal')}</span>
-              <div className="rounded-md border border-border bg-muted px-3 py-2">
-                {formatCurrency(lineTotal)}
+              </Select>
+              <Input
+                label={t('quantity')}
+                type="number"
+                min="1"
+                max={product?.stockQuantity}
+                value={item.quantity}
+                onChange={(event) => updateItem(index, { quantity: Number(event.target.value) })}
+                error={errors[index]?.quantity}
+                required
+                disabled={createSale.isPending}
+              />
+              <div className="space-y-1.5 text-sm font-medium text-foreground">
+                <span>{t('lineTotal')}</span>
+                <div className="rounded-md border border-border bg-muted px-3 py-2">
+                  {formatCurrency(lineTotal)}
+                </div>
+              </div>
+              <div className="flex items-end">
+                <Button
+                  variant="danger"
+                  type="button"
+                  disabled={items.length === 1}
+                  onClick={() => setItems(items.filter((_, itemIndex) => itemIndex !== index))}
+                >
+                  <Trash2 size={16} />
+                </Button>
               </div>
             </div>
-            <div className="flex items-end">
-              <Button
-                variant="danger"
-                type="button"
-                disabled={items.length === 1}
-                onClick={() => setItems(items.filter((_, itemIndex) => itemIndex !== index))}
-              >
-                <Trash2 size={16} />
-              </Button>
-            </div>
-          </div>
-        )
-      })}
+          )
+        })}
+      </div>
 
       <div className="flex flex-col gap-3 border-t border-border pt-4 md:flex-row md:items-center md:justify-between">
         <Button type="button" variant="outline" onClick={() => setItems([...items, newItem()])}>
