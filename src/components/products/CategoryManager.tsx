@@ -133,9 +133,10 @@ export function CategoryManager() {
             onChange={(event) => setName(event.target.value)}
             error={error}
             placeholder={t('categoryName')}
+            required
           />
         </div>
-        <Button type="submit" disabled={createMutation.isPending} className="mt-6 w-full sm:w-auto">
+        <Button type="submit" disabled={createMutation.isPending || !name.trim()} className="mt-6 w-full sm:w-auto">
           {createMutation.isPending ? t('saving') : t('addCategory')}
         </Button>
       </form>
@@ -176,7 +177,7 @@ export function CategoryManager() {
                     type="button"
                     variant="ghost"
                     onClick={saveEdit}
-                    disabled={updateMutation.isPending}
+                    disabled={updateMutation.isPending || !editName.trim()}
                     className="h-7 w-7 p-0 text-green-600 hover:text-green-700"
                     aria-label={t('save')}
                   >

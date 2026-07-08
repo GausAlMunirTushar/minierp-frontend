@@ -36,6 +36,19 @@ export function SaleForm({ onSuccess, onCancel }: { onSuccess: () => void; onCan
     0,
   )
 
+  const isFormInvalid = useMemo(() => {
+    if (items.length === 0) return true
+    return items.some((item) => {
+      const product = productById.get(item.product)
+      return (
+        !item.product ||
+        !item.quantity ||
+        item.quantity <= 0 ||
+        (product && item.quantity > product.stockQuantity)
+      )
+    })
+  }, [items, productById])
+
   const updateItem = (index: number, patch: Partial<SaleItemInput>) => {
     setErrors((current) => ({ ...current, [index]: {} }))
     setItems((current) =>
@@ -237,7 +250,7 @@ export function SaleForm({ onSuccess, onCancel }: { onSuccess: () => void; onCan
           <Button type="button" variant="ghost" onClick={onCancel} disabled={createSale.isPending}>
             {t('cancel')}
           </Button>
-          <Button type="submit" disabled={createSale.isPending}>
+          <Button type="submit" disabled={createSale.isPending || isFormInvalid}>
             <Receipt size={16} />
             {createSale.isPending ? t('creatingSale') : t('createSale')}
           </Button>

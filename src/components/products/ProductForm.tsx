@@ -65,6 +65,27 @@ export function ProductForm({
   const categoriesQuery = useCategories({ page: 1, limit: 100, sort: 'name' })
   const isSaving = createMutation.isPending || updateMutation.isPending
 
+  const isFormInvalid = useMemo(() => {
+    const nameVal = form.name.trim()
+    const skuVal = form.sku.trim()
+    const catVal = form.category.trim()
+    const purchaseVal = Number(form.purchasePrice)
+    const sellingVal = Number(form.sellingPrice)
+    const stockVal = Number(form.stockQuantity)
+
+    const isRequiredFilled =
+      nameVal !== '' &&
+      skuVal !== '' &&
+      catVal !== '' &&
+      !isNaN(purchaseVal) && purchaseVal > 0 &&
+      !isNaN(sellingVal) && sellingVal > 0 &&
+      !isNaN(stockVal) && stockVal >= 0
+
+    const isImageFilled = mode === 'edit' || form.image !== null
+
+    return !isRequiredFilled || !isImageFilled
+  }, [form, mode])
+
   const categoryOptions = useMemo(() => {
     const names = (categoriesQuery.data?.data ?? []).map((category) => category.name)
     if (form.category && !names.includes(form.category)) {
@@ -280,7 +301,7 @@ export function ProductForm({
         <Button type="button" variant="outline" onClick={onCancel} disabled={isSaving}>
           {t('cancel')}
         </Button>
-        <Button type="submit" disabled={isSaving}>
+        <Button type="submit" disabled={isSaving || isFormInvalid}>
           {isSaving ? t('saving') : mode === 'edit' ? t('update') : t('create')}
         </Button>
       </div>
