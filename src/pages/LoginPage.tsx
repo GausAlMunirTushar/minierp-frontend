@@ -114,7 +114,7 @@ export function LoginPage() {
           {mutation.isError && <Alert variant="error">{apiError || t('loginFailed')}</Alert>}
 
           <form onSubmit={handleSubmit} className="space-y-4" noValidate>
-            <Input
+             <Input
               label={t('email')}
               type="email"
               value={email}
@@ -122,6 +122,7 @@ export function LoginPage() {
               onBlur={() => validateField('email')}
               error={errors.email}
               autoComplete="email"
+              required
             />
             <Input
               label={t('password')}
@@ -131,14 +132,15 @@ export function LoginPage() {
               onBlur={() => validateField('password')}
               error={errors.password}
               autoComplete="current-password"
+              required
               endAdornment={
                 <button
-                  type="button"
-                  onClick={() => setShowPassword((current) => !current)}
-                  aria-label={showPassword ? t('hidePassword') : t('showPassword')}
-                  className="rounded p-1 text-muted-foreground hover:text-foreground"
-                >
-                  {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                   type="button"
+                   onClick={() => setShowPassword((current) => !current)}
+                   aria-label={showPassword ? t('hidePassword') : t('showPassword')}
+                   className="rounded p-1 text-muted-foreground hover:text-foreground"
+                 >
+                   {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                 </button>
               }
             />

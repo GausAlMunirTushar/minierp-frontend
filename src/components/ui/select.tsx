@@ -25,6 +25,7 @@ export function Select({
   children,
   className,
   containerClassName,
+  required,
   ...props
 }: SelectProps) {
   const Wrapper: ElementType = label ? 'label' : 'div'
@@ -38,11 +39,23 @@ export function Select({
         containerClassName,
       )}
     >
-      {label && <span>{label}</span>}
+      {label && (
+        <span>
+          {label}
+          {required && (
+            <span className="text-destructive ml-0.5" aria-hidden="true">
+              *
+            </span>
+          )}
+        </span>
+      )}
       <div className="relative">
         <select
+          required={required}
+          aria-invalid={error ? 'true' : 'false'}
           className={cn(
             'w-full appearance-none rounded-md border border-input bg-background px-3 py-2 pr-9 text-sm text-foreground outline-none transition focus:border-ring focus:ring-2 focus:ring-ring/20',
+            'disabled:opacity-60 disabled:cursor-not-allowed disabled:bg-muted',
             error && 'border-destructive focus:border-destructive focus:ring-destructive/20',
             className,
           )}

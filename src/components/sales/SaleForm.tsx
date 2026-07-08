@@ -156,31 +156,43 @@ export function SaleForm({ onSuccess, onCancel }: { onSuccess: () => void; onCan
             key={index}
             className="grid gap-3 rounded-md border border-border p-3 md:grid-cols-[1fr_150px_160px_auto]"
           >
-            <Select
-              label={t('product')}
-              value={item.product}
-              onChange={(event) => updateItem(index, { product: event.target.value })}
-              onBlur={() => validateField(index, 'product')}
-              placeholder={t('selectProduct')}
-              error={errors[index]?.product}
-            >
-              {products.map((productItem) => {
-                const selectedElsewhere =
-                  selectedProducts.includes(productItem._id) && productItem._id !== item.product
-                const outOfStock = productItem.stockQuantity <= 0
+            <label className="space-y-1.5 text-sm font-medium text-foreground">
+              <span>
+                {t('product')}
+                <span className="text-destructive ml-0.5" aria-hidden="true">
+                  *
+                </span>
+              </span>
+              <select
+                value={item.product}
+                onChange={(event) => updateItem(index, { product: event.target.value })}
+                className="w-full rounded-md border border-input bg-background px-3 py-2 text-foreground outline-none focus:border-ring disabled:opacity-60 disabled:cursor-not-allowed disabled:bg-muted"
+                disabled={createSale.isPending}
+                required
+                aria-invalid={errors[index]?.product ? 'true' : 'false'}
+              >
+                <option value="">{t('selectProduct')}</option>
+                {products.map((productItem) => {
+                  const selectedElsewhere =
+                    selectedProducts.includes(productItem._id) && productItem._id !== item.product
+                  const outOfStock = productItem.stockQuantity <= 0
 
-                return (
-                  <option
-                    key={productItem._id}
-                    value={productItem._id}
-                    disabled={selectedElsewhere || outOfStock}
-                  >
-                    {productItem.name} - {t('stock')} {productItem.stockQuantity}
-                    {outOfStock ? ` (${t('outOfStock')})` : ''}
-                  </option>
-                )
-              })}
-            </Select>
+                  return (
+                    <option
+                      key={productItem._id}
+                      value={productItem._id}
+                      disabled={selectedElsewhere || outOfStock}
+                    >
+                      {productItem.name} - {t('stock')} {productItem.stockQuantity}
+                      {outOfStock ? ` (${t('outOfStock')})` : ''}
+                    </option>
+                  )
+                })}
+              </select>
+              {errors[index]?.product && (
+                <span className="text-xs text-destructive">{errors[index]?.product}</span>
+              )}
+            </label>
             <Input
               label={t('quantity')}
               type="number"
@@ -188,8 +200,9 @@ export function SaleForm({ onSuccess, onCancel }: { onSuccess: () => void; onCan
               max={product?.stockQuantity}
               value={item.quantity}
               onChange={(event) => updateItem(index, { quantity: Number(event.target.value) })}
-              onBlur={() => validateField(index, 'quantity')}
               error={errors[index]?.quantity}
+              required
+              disabled={createSale.isPending}
             />
             <div className="space-y-1.5 text-sm font-medium text-foreground">
               <span>{t('lineTotal')}</span>

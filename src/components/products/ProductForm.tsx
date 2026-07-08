@@ -212,6 +212,7 @@ export function ProductForm({
           onChange={(event) => handleNameChange(event.target.value)}
           onBlur={() => validateField('name')}
           error={errors.name}
+          required
         />
         <Input
           label={t('sku')}
@@ -220,6 +221,7 @@ export function ProductForm({
           onChange={(event) => handleSkuChange(event.target.value)}
           onBlur={() => validateField('sku')}
           error={errors.sku}
+          required
         />
         <Select
           label={t('category')}
@@ -229,6 +231,7 @@ export function ProductForm({
           placeholder={t('selectCategory')}
           options={categoryOptions.map((name) => ({ value: name, label: name }))}
           error={errors.category}
+          required
         />
         <Input
           label={t('purchasePrice')}
@@ -239,6 +242,7 @@ export function ProductForm({
           onChange={(event) => setForm({ ...form, purchasePrice: event.target.value })}
           onBlur={() => validateField('purchasePrice')}
           error={errors.purchasePrice}
+          required
         />
         <Input
           label={t('sellingPrice')}
@@ -249,6 +253,7 @@ export function ProductForm({
           onChange={(event) => setForm({ ...form, sellingPrice: event.target.value })}
           onBlur={() => validateField('sellingPrice')}
           error={errors.sellingPrice}
+          required
         />
         <Input
           label={t('stockQuantity')}
@@ -259,6 +264,7 @@ export function ProductForm({
           onChange={(event) => setForm({ ...form, stockQuantity: event.target.value })}
           onBlur={() => validateField('stockQuantity')}
           error={errors.stockQuantity}
+          required
         />
       </div>
 
